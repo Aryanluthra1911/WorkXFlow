@@ -16,7 +16,7 @@ const ProjectDetailBlock = () => {
     setloading(true);
     try{
       if(user.role === "Admin"){
-        const res = await api.get("/Dashboard/getProjects",{params:{c_name:user?.c_name}})
+        const res = await api.get("/Dashboard/getProjects")
         setprojects(res.data.data);
       }
       else if(user.role==="Manager"){

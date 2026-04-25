@@ -25,7 +25,7 @@ const AssignTaskBlock = () => {
         setloading(true);
         try {
             if(user?.role === "Admin"){
-                const res = await api.get("/Dashboard/getLatestTasks", {params: { c_name:user?.c_name }});
+                const res = await api.get("/Dashboard/getLatestTasks");
                 setlatestTasks(res.data.data);
             }
             else if(user?.role === "Manager"){
@@ -106,14 +106,14 @@ function TaskModel({onClose}){
     const { members,setmembers,projects} = useAdminStore()
 
     const getMembers = async () => {
-        const res = await api.get("/Dashboard/getMembers",{params:{c_name:user?.c_name}});
+        const res = await api.get("/Dashboard/getMembers");
         setmembers(res.data);
     };
     const sendData = async(e)=>{
         e.preventDefault();
         setloading(true)
         try{
-            const res = await api.post('/Dashboard/createTask',{title,description,dueDate,assignedTo,assignedToId,companyName:user?.c_name,projectId})
+            const res = await api.post('/Dashboard/createTask',{title,description,dueDate,assignedTo,assignedToId,projectId})
             if(res.data.success){
                 toast.success(res.data.message);
                 settitle('')

@@ -1,40 +1,46 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 
-
-export async function GET(req){
-    try{
-        
-        const { searchParams } = new URL(req.url);
-        const c_name = searchParams.get('c_name');
+async function handler(req, context, session) {
+    try {
         const projects = await prisma.project.findMany({
-            where: {companyName: c_name},
-            include:{
+            where: {
+                companyName: session.user.c_name
+            },
+            include: {
                 organisation: {
                     select: {
                         companyName: true
                     }
                 },
-                _count:{
-                    select:{
-                        task:true,
-                    },
+                _count: {
+                    select: {
+                        task: true
+                    }
                 },
-                task:{
-                    where:{
-                        status:"COMPLETED"
+                task: {
+                    where: {
+                        status: "COMPLETED"
                     },
-                    select:{
-                        id:true,
-                    },
-                },
-            },
+                    select: {
+                        id: true
+                    }
+                }
+            }
         });
+
         return NextResponse.json({
             success: true,
             data: projects
         });
-    }catch(err){
-        return NextResponse.json({message:"api error",success:false,error:err})
+
+    } catch (err) {
+        return NextResponse.json({
+            success: false,
+            message: "api error"
+        });
     }
 }
+
+export const GET = requireAuth(handler);

@@ -1,16 +1,24 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 
-export async function GET(req) {
-    try{
-        const { searchParams } = new URL(req.url);
-        const c_name = searchParams.get('c_name');
-        const members = await prisma.users.findMany({where: {c_name: c_name,role:'Member'}});
-        return NextResponse.json(members)
-    }catch{
+async function handler(req, context, session) {
+    try {
+        const members = await prisma.users.findMany({
+            where: {
+                c_name: session.user.c_name,
+                role: "Member"
+            }
+        });
+
+        return NextResponse.json(members);
+
+    } catch {
         return NextResponse.json(
             { success: false, message: "Server Error" },
             { status: 500 }
         );
     }
 }
+
+export const GET = requireAuth(handler);

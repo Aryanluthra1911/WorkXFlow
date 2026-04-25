@@ -26,7 +26,7 @@ const AddNewProjectBlock = () => {
     const getLatestProjects = async () => {
         setloading(true);
         try{
-            const res = await api.get("/Dashboard/getLatestProjects",{params:{c_name:user?.c_name}});
+            const res = await api.get("/Dashboard/getLatestProjects");
             setlatestProjects(res.data.data);
         }catch(err){
             console.log(err)
@@ -99,11 +99,11 @@ function ProjectModel({onClose}){
     const [loading,setloading] = useState(false)
     
     const getManagers = async () => {
-        const res = await api.get("/Dashboard/getManagers",{params:{c_name:user?.c_name}});
+        const res = await api.get("/Dashboard/getManagers");
         setmanagers(res.data);
     };
     const fetchOrgId = async()=>{
-        const res = await api.post("/Dashboard/fetchOrgId",{org_name:organisation,companyName:user?.c_name}) 
+        const res = await api.post("/Dashboard/fetchOrgId",{org_name:organisation}) 
         return res.data.orgId;
     }
     const sendData = async(e)=>{
@@ -116,7 +116,6 @@ function ProjectModel({onClose}){
                 deadline,
                 projectManager,
                 projectManagerId:parseInt(projectManagerId),
-                c_name:user?.c_name,
                 orgId:id
             })
             if(res.data.success){
