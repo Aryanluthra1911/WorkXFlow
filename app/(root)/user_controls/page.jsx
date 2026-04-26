@@ -52,7 +52,7 @@ const page = () => {
         setloading(true)
         try{
             const res = await api.post('/UserControls/createUser',{
-                name,email,role,password,years_of_experience:Number(yop),joining_date:joiningdate,phoneno,cname:user?.c_name
+                name,email,role,password,years_of_experience:Number(yop),joining_date:joiningdate,phoneno
             })
             if(res.data.success){
                 toast.success(res.data.message)
@@ -80,7 +80,7 @@ const page = () => {
     const getusers = async()=>{
         try {
             if(user?.role==="Admin"){
-                const res = await api.get('/UserControls/viewUsers',{params:{cname:user?.c_name}})
+                const res = await api.get('/UserControls/viewUsers',)
                 setusers(res.data); 
             }
             else if(user?.role === "Manager"){
