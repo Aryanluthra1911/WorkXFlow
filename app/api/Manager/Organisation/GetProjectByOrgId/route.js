@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 
-export async function GET(req) {
+async function handler(req,context,session) {
     try {
         const { searchParams } = new URL(req.url);
         const orgId = Number(searchParams.get('orgId'));
@@ -66,3 +67,4 @@ export async function GET(req) {
         );
     }
 }
+export const GET = requireAuth(handler)

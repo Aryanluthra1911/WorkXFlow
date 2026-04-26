@@ -15,7 +15,7 @@ async function handler(req,context,session) {
             years_of_experience,
             joining_date,
         } = body;
-        const Emailexists = await prisma.users.findUnique({ where: { email:session.user.email } });
+        const Emailexists = await prisma.users.findUnique({ where: { email:email } });
         if (Emailexists) {
             return NextResponse.json(
                 { success: false, message: "Email already exists" },

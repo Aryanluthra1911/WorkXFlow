@@ -84,7 +84,7 @@ const page = () => {
                 setusers(res.data); 
             }
             else if(user?.role === "Manager"){
-                const res = await api.get('Manager/UserControl/ViewUsers',{params:{cname:user?.c_name}})
+                const res = await api.get('Manager/UserControl/ViewUsers')
                 setusers(res.data); 
             }
             
