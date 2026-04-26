@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { ai } from "@/lib/gemini";
+import { requireAuth } from "@/lib/auth";
 
-export async function GET(req) {
+async function handler(req,context,session) {
     try {
         const { searchParams } = new URL(req.url);
         const previous_chats = searchParams.get('previous_chats');
@@ -45,6 +46,7 @@ export async function GET(req) {
             console.log(response);
         return NextResponse.json({message:"response extracted",success:true,reply:response})
     } catch (error) {
-        return NextResponse.json({message:"api error",success:false,error:error})
+        return NextResponse.json({message:"api error",success:false})
     }
 }
+export const GET = requireAuth(handler)

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-export async function GET(req) {
+import { requireAuth } from "@/lib/auth"
+async function handler(req,context,session) {
     try {
         const { searchParams } = new URL(req.url);
         const convoId = parseInt(searchParams.get('convoId'));
@@ -23,3 +23,4 @@ export async function GET(req) {
         return NextResponse.json({message:"api error",success:false,error:error})
     }
 }
+export const GET = requireAuth(handler)

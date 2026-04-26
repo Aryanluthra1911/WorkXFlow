@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-
-export async function DELETE() {
+import { requireAuth} from "@/lib/auth"
+async function handler() {
     try{
         const now = new Date();
         const result = await prisma.conversation.deleteMany({
@@ -22,3 +22,4 @@ export async function DELETE() {
         return NextResponse.json({message:"api error",success:false,error:err.message})
     }
 }
+export const DELETE = requireAuth(handler);

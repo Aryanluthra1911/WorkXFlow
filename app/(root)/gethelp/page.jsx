@@ -54,19 +54,21 @@ const page = () => {
         const run = async()=>{
             try {
                 await api.delete('/Aichats/deleteExpiredConvo')
-                const res = await api.get(`/Aichats/getConvoId?email=${user?.email}`)
+                const res = await api.get(`/Aichats/getConvoId`)
                 if(res.data.success){
                     const id = res.data.data?.id;
                     setconversationId(id)
                     getChats(id)
                 }
                 else{
-                    const res = await api.post('/Aichats/createNewConvo', { email:user?.email });
+                    const res = await api.post('/Aichats/createNewConvo');
                     let convoId = res.data.conversationId;
                     setconversationId(convoId); 
+                    await getChats(convoId);
                 }
             } catch (error) {
                 console.log(error)
+                setloading(false)
             }
         }
         run()
