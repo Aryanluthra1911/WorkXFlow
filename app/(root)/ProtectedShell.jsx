@@ -10,7 +10,6 @@ export default function ProtectedShell({ children }) {
     const title = usePageStore((state) => state.title);
     const router = useRouter();
     const pathname = usePathname();
-    console.log(pathname);
     const [nav, setNav] = useState({
         history: [pathname],
         index: 0,
