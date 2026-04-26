@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 
-export async function GET(req) {
+async function handler(req,context,session) {
     try {
         const { searchParams } = new URL(req.url);
         const orgId = Number(searchParams.get('orgId'));
@@ -50,10 +51,10 @@ export async function GET(req) {
             statusSummary: statuses
         });
     } catch (error) {
-        throw error
         console.error("Error fetching projects:", error);
         return NextResponse.json(
             {success:false, error: "Failed to fetch projects" }
         );
     }
 }
+export const GET = requireAuth(handler)

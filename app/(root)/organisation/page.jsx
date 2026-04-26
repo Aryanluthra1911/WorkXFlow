@@ -22,7 +22,6 @@ const page = () => {
                 if (user?.role === "Admin") {
                     const response = await api.get(
                         "/organisation/fetchOrganisations",
-                        { params: { companyName: user?.c_name } },
                     );
                     setorganisations(response.data.organisations);
                 } else if (user?.role === "Manager") {
