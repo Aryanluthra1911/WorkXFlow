@@ -31,13 +31,16 @@ const page = () => {
                 setLoading(false);
                 return;
             }
+            else{
+                toast.success("signin successfull");
+                router.push("/dashboard");
+            }
             
         } catch (error) {
             console.log(error)
         }finally{
             setLoading(false)
-            toast.success("signin successfull");
-            router.push("/dashboard");
+            
         }
     };
 
