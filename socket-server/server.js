@@ -3,72 +3,68 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 
+const prisma = new PrismaClient();
 const app = express();
+
+app.use(express.json());
+
+const allowedOrigins = [
+    "http://localhost:3000",
+    process.env.FRONTEND_URL,
+].filter(Boolean);
 
 app.use(
     cors({
-        origin: "http://localhost:3000",
-    }),
+        origin: allowedOrigins,
+        credentials: true,
+    })
 );
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: allowedOrigins,
         methods: ["GET", "POST"],
+        credentials: true,
     },
 });
+
 const onlineUsers = new Map();
+
 io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    // =========================
-    // 🔵 USER ONLINE
-    // =========================
     socket.on("user_online", (userId) => {
         onlineUsers.set(userId, socket.id);
         io.emit("online_users", Array.from(onlineUsers.keys()));
     });
 
-    // =========================
-    // 💬 JOIN CHAT
-    // =========================
     socket.on("join_chat", (chatId) => {
         socket.join(`chat_${chatId}`);
-        console.log(`User joined chat_${chatId}`);
     });
 
-    // =========================
-    // 📩 SEND MESSAGE
-    // =========================
     socket.on("send_message", async (data) => {
         try {
-            console.log("🔥 SERVER RECEIVED:", data);
-
             const { chatId, senderId, content } = data;
+
+            if (!content || !content.trim()) return;
 
             const message = await prisma.chatMessage.create({
                 data: {
-                    content,
+                    content: content.trim(),
                     senderId,
                     chatConversationId: chatId,
                 },
             });
 
-            console.log("✅ SAVED IN DB:", message);
-
             io.to(`chat_${chatId}`).emit("receive_message", message);
         } catch (error) {
-            console.error("❌ SERVER ERROR:", error);
+            console.error(error);
         }
     });
 
-    // =========================
-    // ⌨️ TYPING INDICATOR
-    // =========================
     socket.on("typing", ({ chatId, userId }) => {
         socket.to(`chat_${chatId}`).emit("typing", userId);
     });
@@ -77,13 +73,7 @@ io.on("connection", (socket) => {
         socket.to(`chat_${chatId}`).emit("stop_typing");
     });
 
-    // =========================
-    // 🔴 DISCONNECT
-    // =========================
     socket.on("disconnect", () => {
-        console.log("User disconnected:", socket.id);
-
-        // remove user from online list
         for (let [userId, sockId] of onlineUsers.entries()) {
             if (sockId === socket.id) {
                 onlineUsers.delete(userId);
@@ -94,8 +84,13 @@ io.on("connection", (socket) => {
     });
 });
 
-// 🚀 START SERVER
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
+
 server.listen(PORT, () => {
-    console.log(`🔥 Socket server running on port ${PORT}`);
+    console.log(`Socket server running on port ${PORT}`);
+});
+
+process.on("SIGINT", async () => {
+    await prisma.$disconnect();
+    process.exit(0);
 });
