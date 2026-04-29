@@ -8,6 +8,8 @@ import { getSocket } from "@/lib/socket";
 import api from "@/lib/axios";
 import ProjectChatProfileCard from "@/components/ProjectChatProfileCard";
 import useUserStore from "@/store/user/useUserstore";
+import { useRef } from "react";
+
 
 const page = () => {
     const [id, setid] = useState(null);
@@ -32,6 +34,7 @@ const page = () => {
     const [text, setText] = useState("");
 
     const user = useUserStore((state) => state.user);
+    const bottomRef = useRef(null);
 
     const handleDm = async (userB) => {
         try {
@@ -69,6 +72,11 @@ const page = () => {
         setActivePage("Chats");
         setTitle("Chats");
     }, []);
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -170,23 +178,23 @@ const page = () => {
                     <div className="w-[90%] flex-1 flex flex-col gap-3 items-center   overflow-y-auto no-scrollbar">
                         {ProjectLoading
                             ? [...Array(5)].map((_, i) => (
-                                  <div
-                                      key={i}
-                                      className="w-full min-h-12 rounded-xl bg-gray-300  animate-pulse [animation-duration:1s]"
-                                  />
-                              ))
+                                <div
+                                    key={i}
+                                    className="w-full min-h-12 rounded-xl bg-gray-300  animate-pulse [animation-duration:1s]"
+                                />
+                            ))
                             : projects.map((idx, key) => {
-                                  return (
-                                      <ProjectChatProfileCard
-                                          key={key}
-                                          idx={idx}
-                                          id={id}
-                                          setid={setid}
-                                          setProjectData={setProjectData}
-                                          setChatType={setChatType}
-                                      />
-                                  );
-                              })}
+                                return (
+                                    <ProjectChatProfileCard
+                                        key={key}
+                                        idx={idx}
+                                        id={id}
+                                        setid={setid}
+                                        setProjectData={setProjectData}
+                                        setChatType={setChatType}
+                                    />
+                                );
+                            })}
                     </div>
                 </div>
             </div>
@@ -228,7 +236,7 @@ const page = () => {
                                   ProjectData.title?.slice(1)}
                         </div>
                     </div>
-                    <div className="w-full h-[80%] bg-[#e9ecef] overflow-y-auto p-4 space-y-6">
+                    <div className="w-full h-[80%] bg-[#e9ecef] overflow-y-auto p-4 no-scrollbar  space-y-6">
                         {MessageLoading ? (
                             [...Array(4)].map((_, i) => (
                                 <div key={i} className="space-y-6">
@@ -256,30 +264,37 @@ const page = () => {
                                 </div>
                                 
                             </div>
-                            :
-                            messages.map((msg) => (
-                                <div
-                                    key={msg.id}
-                                    className={`mb-2 flex ${
-                                        msg.senderId === user.id
-                                            ? "justify-end"
-                                            : "justify-start"
-                                    }`}
-                                >
+                            :<>
+                                {
+                                    messages.map((msg) => (
                                     <div
-                                        className={`px-5 py-2 rounded-xl font-semibold max-w-[60%] ${
+                                        key={msg.id}
+                                        className={`mb-2 flex ${
                                             msg.senderId === user.id
-                                                ? "bg-blue-500 text-white"
-                                                : "bg-gray-300"
+                                                ? "justify-end"
+                                                : "justify-start"
                                         }`}
                                     >
-                                        {msg.content}
+                                        <div
+                                            className={`px-5 py-2 rounded-xl font-semibold max-w-[60%] ${
+                                                msg.senderId === user.id
+                                                    ? "bg-blue-500 text-white"
+                                                    : "bg-gray-300"
+                                            }`}
+                                        >
+                                            {msg.content}
+                                        </div>
                                     </div>
-                                </div>
-                            ))
+                                ))
+                                }
+                                <div ref={bottomRef} />
+                            </>
+                            
+                            
                         )}
                         
                     </div>
+                    
                     <div className="w-full h-[10%] bg-[#e9ecef] flex justify-evenly items-start">
                         <input
                             type="text"
