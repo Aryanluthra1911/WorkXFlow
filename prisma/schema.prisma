@@ -90,6 +90,8 @@ model Users{
   yearsOfExperience Int?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+  chatParticipants ChatParticipants[]
+  sentMessages     ChatMessage[]
 }
 model Conversation {
   id               Int   @id @default(autoincrement())
@@ -108,3 +110,28 @@ model AiMessage {
   Conversation   Conversation @relation(fields: [conversationId], references: [id],onDelete: Cascade)
 }
 
+model ChatConversation{
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  participants  ChatParticipants[]
+  messages      ChatMessage[]
+}
+
+model ChatParticipants {
+  id                 Int              @id @default(autoincrement())
+  userId             Int
+  chatConversationId Int
+  user               Users            @relation(fields: [userId],references: [id],onDelete:Cascade)
+  conversation       ChatConversation @relation(fields: [chatConversationId],references: [id] , onDelete: Cascade)
+  @@unique([userId,chatConversationId])
+}
+model ChatMessage {
+  id                 Int              @id @default(autoincrement())
+  content            String
+  senderId           Int
+  chatConversationId Int
+  createdAt          DateTime         @default(now())
+
+  sender             Users            @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  conversation       ChatConversation @relation(fields: [chatConversationId], references: [id], onDelete: Cascade)
+}
