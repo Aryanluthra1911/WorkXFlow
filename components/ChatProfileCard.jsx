@@ -1,14 +1,12 @@
 'use client'
 import React, { useState } from 'react'
 
-const ChatProfileCard = ({idx,id,setid,setChatData,setChatType,handleDm}) => {
+const ChatProfileCard = ({idx,id,setid,setChatData,handleDm}) => {
     const active = id===idx.id;
-    
     return (
         <div onClick={async()=>{
             setid(idx.id)
             setChatData(idx)
-            setChatType("Dm")
             const chatId =  await handleDm(idx.id)
             console.log(chatId)
         }} className={`w-full min-h-15 ${active?'border-[#2c84db] border-l-4 bg-[#ececec] ':' hover:scale-95 hover:bg-[#f2f2f2] '} rounded-xl  flex justify-around items-center transition-all duration-300 ease-in-out`}>
