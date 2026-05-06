@@ -18,14 +18,14 @@ async function handler(req, context, session) {
                             some: { userId: userB },
                         },
                     },
-                    {
-                        participants: {
-                            every: {
-                                userId: { in: [userA, userB] },
-                            },
-                        },
-                    },
                 ],
+            },include: {
+                participants: true,
+                messages: {
+                    orderBy: {
+                        createdAt: "asc",
+                    },
+                },
             },
         });
         if (!chat) {
@@ -40,7 +40,7 @@ async function handler(req, context, session) {
         return NextResponse.json({
             success: true,
             message: "success",
-            data:chat
+            data: chat,
         });
     } catch (error) {
         return NextResponse.json({

@@ -13,14 +13,13 @@ const page = () => {
     const [id, setid] = useState(null);
 
     const [ChatId, SetChatId] = useState();
-    const [ChatType, setChatType] = useState("");
+    const [chatData, setChatData] = useState([]);
 
+    const [selectedChat, setSelectedChat] = useState([]);
     const [users, setUsers] = useState();
 
     const [DmLoading, setDmLoading] = useState(true);
     const [MessageLoading, setMessageLoading] = useState(true);
-
-    const [chatData, setChatData] = useState([]);
 
     const setActivePage = usePageStore((state) => state.setActivePage);
     const setTitle = usePageStore((state) => state.setTitle);
@@ -39,12 +38,12 @@ const page = () => {
                 userB: userB,
             });
             const chat = res.data.data;
-            SetChatId(chat.id);
-            return chat.id;
+            return chat;
         } catch (error) {
             console.log(error);
         }
     };
+
     const sendMessage = () => {
         if (!text.trim()) return;
         const socket = getSocket();
@@ -53,7 +52,6 @@ const page = () => {
             senderId: user.id,
             content: text,
         });
-
         socket.emit("send_message", {
             chatId: ChatId,
             senderId: user.id,
@@ -73,6 +71,19 @@ const page = () => {
     }, [messages]);
 
     useEffect(() => {
+        if (!chatData.length || !id) return;
+
+        const chat = chatData.find((item) => item.id === id);
+
+        console.log("FOUND CHAT:", chat);
+
+        setSelectedChat(chat);
+        setMessages(chat?.chats?.messages || []);
+        SetChatId(chat?.chats?.id);
+        setMessageLoading(false);
+    }, [id, chatData]);
+
+    useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const res = await api.get("/chat/getUsers");
@@ -85,25 +96,30 @@ const page = () => {
         };
         fetchUsers();
     }, []);
-
     useEffect(() => {
-        if (!ChatId) return;
-
-        const loadMessages = async () => {
+        if (!users) return;
+        const get_data = async () => {
             try {
-                const res = await api.get(`/chat/FetchChats`, {
-                    params: { chatId: ChatId },
-                });
-                setMessages(res.data.data);
-            } catch (err) {
-                console.log(err);
-            } finally {
-                setMessageLoading(false);
+                const allChats = await Promise.all(
+                    users.map(async (userItem) => {
+                        const chat = await handleDm(userItem.id);
+                        return {
+                            id: userItem.id,
+                            name: userItem.name,
+                            role: userItem.role,
+                            chats: chat,
+                        };
+                    }),
+                );
+                console.log(allChats);
+                setChatData(allChats);
+            } catch {
+                console.log("Data fetching error");
             }
         };
+        get_data();
+    }, [users]);
 
-        loadMessages();
-    }, [ChatId]);
     useEffect(() => {
         if (!ChatId) return;
         const socket = getSocket();
@@ -140,15 +156,13 @@ const page = () => {
                                       className="w-full min-h-12 rounded-xl bg-gray-300  animate-pulse [animation-duration:1s]"
                                   />
                               ))
-                            : users.map((idx, key) => {
+                            : chatData.map((idx, key) => {
                                   return (
                                       <ChatProfileCard
                                           key={key}
                                           idx={idx}
                                           id={id}
                                           setid={setid}
-                                          setChatData={setChatData}
-                                          handleDm={handleDm}
                                       />
                                   );
                               })}
@@ -172,7 +186,7 @@ const page = () => {
                 <div className="w-[75%] h-full">
                     <div className="w-full h-[10%] flex items-center pl-5 gap-4">
                         <div className=" w-10 h-10 bg-gradient-to-br from-cyan-400 to-indigo-900 rounded-4xl flex justify-center items-center text-white text-xl font-semibold">
-                            {chatData.name
+                            {selectedChat.name
                                 ?.trim()
                                 .split(" ")
                                 .slice(0, 2)
@@ -180,8 +194,10 @@ const page = () => {
                                 .join("")}
                         </div>
                         <div className="text-xl  h-full flex justify-start items-center w-[80%] font-bold">
-                            {chatData.name?.charAt(0).toUpperCase() +
-                                chatData.name?.slice(1)}
+                            {selectedChat?.name
+                                ? selectedChat.name.charAt(0).toUpperCase() +
+                                  selectedChat.name.slice(1)
+                                : ""}
                         </div>
                     </div>
                     <div className="w-full h-[80%] bg-[#e9ecef] overflow-y-auto p-4 no-scrollbar  space-y-6">

@@ -15,6 +15,7 @@ async function handler(req, context, session) {
             select: {
                 id: true,
                 name: true,
+                role:true
             },
         });
         return NextResponse.json({
