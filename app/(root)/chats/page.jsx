@@ -8,14 +8,14 @@ import { getSocket } from "@/lib/socket";
 import api from "@/lib/axios";
 import useUserStore from "@/store/user/useUserstore";
 import { useRef } from "react";
+import { Param } from "@prisma/client/runtime/library";
 
 const page = () => {
     const [id, setid] = useState(null);
 
     const [ChatId, SetChatId] = useState();
-    const [chatData, setChatData] = useState([]);
 
-    const [selectedChat, setSelectedChat] = useState([]);
+    const [selectedUser, setSelectedUser] = useState([]);
     const [users, setUsers] = useState();
 
     const [DmLoading, setDmLoading] = useState(true);
@@ -29,20 +29,6 @@ const page = () => {
 
     const user = useUserStore((state) => state.user);
     const bottomRef = useRef(null);
-
-    const handleDm = async (userB) => {
-        try {
-            const myId = user.id;
-            const res = await api.post("/chat/CreateOrGetChatId", {
-                userA: myId,
-                userB: userB,
-            });
-            const chat = res.data.data;
-            return chat;
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     const sendMessage = () => {
         if (!text.trim()) return;
@@ -71,17 +57,28 @@ const page = () => {
     }, [messages]);
 
     useEffect(() => {
-        if (!chatData.length || !id) return;
+        if (!user || !id) return;
+        const userInfo = users.find((item) => item.id === id);
+        setSelectedUser(userInfo);
+    }, [user, id]);
 
-        const chat = chatData.find((item) => item.id === id);
-
-        console.log("FOUND CHAT:", chat);
-
-        setSelectedChat(chat);
-        setMessages(chat?.chats?.messages || []);
-        SetChatId(chat?.chats?.id);
-        setMessageLoading(false);
-    }, [id, chatData]);
+    useEffect(() => {
+        if (!ChatId) return;
+        try {
+            const FetchChat = async () => {
+                const res = await api.get("/chat/FetchChats", {
+                    params: { chatId: ChatId },
+                });
+                setMessages(res.data.data);
+            };
+            FetchChat();
+        } catch (error) {
+            console.log("chats were unable to fetch")
+        }
+        finally{
+            setMessageLoading(false)
+        }
+    }, [ChatId]);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -96,29 +93,6 @@ const page = () => {
         };
         fetchUsers();
     }, []);
-    useEffect(() => {
-        if (!users) return;
-        const get_data = async () => {
-            try {
-                const allChats = await Promise.all(
-                    users.map(async (userItem) => {
-                        const chat = await handleDm(userItem.id);
-                        return {
-                            id: userItem.id,
-                            name: userItem.name,
-                            role: userItem.role,
-                            chats: chat,
-                        };
-                    }),
-                );
-                console.log(allChats);
-                setChatData(allChats);
-            } catch {
-                console.log("Data fetching error");
-            }
-        };
-        get_data();
-    }, [users]);
 
     useEffect(() => {
         if (!ChatId) return;
@@ -151,21 +125,24 @@ const page = () => {
                     <div className=" w-[90%]  flex-1 flex flex-col gap-3 items-center   overflow-y-auto no-scrollbar">
                         {DmLoading
                             ? [...Array(10)].map((_, i) => (
-                                  <div
-                                      key={i}
-                                      className="w-full min-h-12 rounded-xl bg-gray-300  animate-pulse [animation-duration:1s]"
-                                  />
-                              ))
-                            : chatData.map((idx, key) => {
-                                  return (
-                                      <ChatProfileCard
-                                          key={key}
-                                          idx={idx}
-                                          id={id}
-                                          setid={setid}
-                                      />
-                                  );
-                              })}
+                                <div
+                                    key={i}
+                                    className="w-full min-h-12 rounded-xl bg-gray-300  animate-pulse [animation-duration:1s]"
+                                />
+                            ))
+                            : users.map((idx, key) => {
+                                return (
+                                    <ChatProfileCard
+                                        key={key}
+                                        idx={idx}
+                                        id={id}
+                                        setid={setid}
+                                        userId={user.id}
+                                        SetChatId={SetChatId}
+                                        messages = {messages}
+                                    />
+                                );
+                            })}
                     </div>
                 </div>
             </div>
@@ -186,7 +163,7 @@ const page = () => {
                 <div className="w-[75%] h-full">
                     <div className="w-full h-[10%] flex items-center pl-5 gap-4">
                         <div className=" w-10 h-10 bg-gradient-to-br from-cyan-400 to-indigo-900 rounded-4xl flex justify-center items-center text-white text-xl font-semibold">
-                            {selectedChat.name
+                            {selectedUser.name
                                 ?.trim()
                                 .split(" ")
                                 .slice(0, 2)
@@ -194,9 +171,9 @@ const page = () => {
                                 .join("")}
                         </div>
                         <div className="text-xl  h-full flex justify-start items-center w-[80%] font-bold">
-                            {selectedChat?.name
-                                ? selectedChat.name.charAt(0).toUpperCase() +
-                                  selectedChat.name.slice(1)
+                            {selectedUser?.name
+                                ? selectedUser.name.charAt(0).toUpperCase() +
+                                selectedUser.name.slice(1)
                                 : ""}
                         </div>
                     </div>
