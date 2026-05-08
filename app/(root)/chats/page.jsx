@@ -8,7 +8,6 @@ import { getSocket } from "@/lib/socket";
 import api from "@/lib/axios";
 import useUserStore from "@/store/user/useUserstore";
 import { useRef } from "react";
-import { Param } from "@prisma/client/runtime/library";
 
 const page = () => {
     const [id, setid] = useState(null);
@@ -73,10 +72,9 @@ const page = () => {
             };
             FetchChat();
         } catch (error) {
-            console.log("chats were unable to fetch")
-        }
-        finally{
-            setMessageLoading(false)
+            console.log("chats were unable to fetch");
+        } finally {
+            setMessageLoading(false);
         }
     }, [ChatId]);
 
@@ -123,14 +121,19 @@ const page = () => {
                         DIRECT MESSAGES
                     </div>
                     <div className=" w-[90%]  flex-1 flex flex-col gap-3 items-center   overflow-y-auto no-scrollbar">
-                        {DmLoading
-                            ? [...Array(10)].map((_, i) => (
+                        {DmLoading ? (
+                            [...Array(10)].map((_, i) => (
                                 <div
                                     key={i}
                                     className="w-full min-h-12 rounded-xl bg-gray-300  animate-pulse [animation-duration:1s]"
                                 />
                             ))
-                            : users.map((idx, key) => {
+                        ) : users.length === 0 ? (
+                            <p className="w-full h-full items-center justify-center font-semibold">
+                                No Users Found
+                            </p>
+                        ) : (
+                            users.map((idx, key) => {
                                 return (
                                     <ChatProfileCard
                                         key={key}
@@ -139,10 +142,11 @@ const page = () => {
                                         setid={setid}
                                         userId={user.id}
                                         SetChatId={SetChatId}
-                                        messages = {messages}
+                                        messages={messages}
                                     />
                                 );
-                            })}
+                            })
+                        )}
                     </div>
                 </div>
             </div>
@@ -174,7 +178,8 @@ const page = () => {
                             {selectedUser?.name
                                 ? selectedUser.name.charAt(0).toUpperCase() +
                                 selectedUser.name.slice(1)
-                                : ""}
+                                : ""
+                            }
                         </div>
                     </div>
                     <div className="w-full h-[80%] bg-[#e9ecef] overflow-y-auto p-4 no-scrollbar  space-y-6">

@@ -8,7 +8,6 @@ const ChatProfileCard = ({ idx, id, setid, userId, SetChatId, messages }) => {
     const [data, setData] = useState();
     const [MessageLoading, setMessageLoading] = useState(true);
     const [LatestMessage, SetLatestMessage] = useState();
-    const [unreadCount, setUnreadCount] = useState(0);
     const [Time, SetTime] = useState();
 
     const getTimeAgo = () => {
@@ -56,24 +55,6 @@ const ChatProfileCard = ({ idx, id, setid, userId, SetChatId, messages }) => {
             SetLatestMessage(lastMsg);
         }
     }, [messages]);
-
-    // useEffect(() => {
-    //     if (!messages || messages.length === 0) return;
-
-    //     const lastMsg = messages[messages.length - 1];
-    //     if (!lastMsg) return;
-
-    //     if (active) {
-    //         SetLatestMessage(lastMsg);
-    //         setUnreadCount(0);
-    //     } else if (lastMsg.senderId === idx.id || lastMsg.senderId === userId) {
-    //         SetLatestMessage(lastMsg); // ✅ dono cases me update hoga
-    //         if (lastMsg.senderId === idx.id) {
-    //             // ✅ sirf receive hone pe count badhega
-    //             setUnreadCount((prev) => prev + 1);
-    //         }
-    //     }
-    // }, [messages]);
 
     useEffect(() => {
         const time = LatestMessage?.createdAt ? getTimeAgo() : "";
