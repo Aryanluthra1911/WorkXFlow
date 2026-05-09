@@ -12,7 +12,6 @@ const page = () => {
     useEffect(()=>{
         setActivePage("Dashboard")
     },[])
-    console.log(user?.role)
     if(user?.role === 'Admin'){
         return <Admin_dashboard/>
     }

@@ -4,9 +4,13 @@ import usePageStore from "@/store/pages/usePageStore";
 import "react-toastify/dist/ReactToastify.css";
 import { FaArrowLeft } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa";
+import useUserStore from "@/store/user/useUserstore";
+import { getSocket } from "@/lib/socket"; 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
 export default function ProtectedShell({ children }) {
+    const user = useUserStore((state) => state.user);
     const title = usePageStore((state) => state.title);
     const router = useRouter();
     const pathname = usePathname();
@@ -15,6 +19,13 @@ export default function ProtectedShell({ children }) {
         index: 0,
     });
     const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        if (!user) return;
+        const socket = getSocket();
+        socket.connect();
+        socket.emit("user_online", user.id);
+    }, [user]);
     useEffect(() => {
         setIsMounted(true);
     }, []);

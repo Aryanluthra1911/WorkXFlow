@@ -15,7 +15,7 @@ const page = () => {
     const [ChatId, SetChatId] = useState();
 
     const [selectedUser, setSelectedUser] = useState([]);
-    const [users, setUsers] = useState();
+    const [users, setUsers] = useState([]);
 
     const [DmLoading, setDmLoading] = useState(true);
     const [MessageLoading, setMessageLoading] = useState(true);
@@ -25,6 +25,7 @@ const page = () => {
 
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState("");
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
     const user = useUserStore((state) => state.user);
     const bottomRef = useRef(null);
@@ -83,6 +84,7 @@ const page = () => {
             try {
                 const res = await api.get("/chat/getUsers");
                 setUsers(res.data.data);
+                console.log("USERS: ",res.data.data)
             } catch (error) {
                 console.log(error);
             } finally {
@@ -106,6 +108,16 @@ const page = () => {
         };
     }, [ChatId]);
 
+    useEffect(() => {
+        const socket = getSocket();
+        socket.on("online_users", (userIds) => {
+            setOnlineUsers(userIds);
+        });
+        return () => {
+            socket.off("online_users");
+        };
+    }, []);
+
     return (
         <div className="w-full h-[90%] bg-[#f9fafb] flex justify-around items-center">
             <div className="w-[25%] h-full flex flex-col items-center justify-around">
@@ -128,7 +140,7 @@ const page = () => {
                                     className="w-full min-h-12 rounded-xl bg-gray-300  animate-pulse [animation-duration:1s]"
                                 />
                             ))
-                        ) : users.length === 0 ? (
+                        ) : !users || users.length === 0 ? (
                             <p className="w-full h-full items-center justify-center font-semibold">
                                 No Users Found
                             </p>
@@ -142,7 +154,8 @@ const page = () => {
                                         setid={setid}
                                         userId={user.id}
                                         SetChatId={SetChatId}
-                                        messages={messages}
+                                        onlineUsers={onlineUsers}
+                                        activeChatId={ChatId}
                                     />
                                 );
                             })
@@ -174,12 +187,15 @@ const page = () => {
                                 .map((w) => w[0].toUpperCase())
                                 .join("")}
                         </div>
-                        <div className="text-xl  h-full flex justify-start items-center w-[80%] font-bold">
+                        <div className="text-xl  h-full flex justify-start items-center w-[75%] font-bold ">
                             {selectedUser?.name
                                 ? selectedUser.name.charAt(0).toUpperCase() +
                                 selectedUser.name.slice(1)
                                 : ""
                             }
+                        </div>
+                        <div className=" w-20 h-8 rounded-2xl text-sm font-bold flex items-center justify-center bg-gray-200 border-white border-1 shadow-lg">
+                            {selectedUser?.role}
                         </div>
                     </div>
                     <div className="w-full h-[80%] bg-[#e9ecef] overflow-y-auto p-4 no-scrollbar  space-y-6">
