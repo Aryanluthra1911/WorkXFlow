@@ -6,7 +6,6 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 const app = express();
-
 app.use(express.json());
 
 const allowedOrigins = [
@@ -14,21 +13,11 @@ const allowedOrigins = [
     process.env.FRONTEND_URL,
 ].filter(Boolean);
 
-app.use(
-    cors({
-        origin: allowedOrigins,
-        credentials: true,
-    }),
-);
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 const server = http.createServer(app);
-
 const io = new Server(server, {
-    cors: {
-        origin: allowedOrigins,
-        methods: ["GET", "POST"],
-        credentials: true,
-    },
+    cors: { origin: allowedOrigins, methods: ["GET", "POST"], credentials: true },
 });
 
 const onlineUsers = new Map();
@@ -67,21 +56,33 @@ io.on("connection", (socket) => {
                 chatId,
                 message,
             });
-        
+
             const participants = await prisma.chatParticipants.findMany({
                 where: { chatConversationId: chatId },
                 select: { userId: true },
             });
+
             const receiverId = participants.find(
-                (p) => p.userId !== senderId,
+                (p) => p.userId !== senderId
             )?.userId;
+
             const receiverData = onlineUsers.get(receiverId);
+
             if (receiverData) {
+                const receiverSocket = io.sockets.sockets.get(receiverData.socketId);
+                if (receiverSocket) {
+                    receiverSocket.join(`chat_${chatId}`);
+                }
                 io.to(receiverData.socketId).emit("new_unread", {
                     chatId,
                     senderId,
                 });
+                io.to(receiverData.socketId).emit("latest_message_update", {
+                    chatId,
+                    message,
+                });
             }
+
         } catch (error) {
             console.error(error);
         }
@@ -113,18 +114,14 @@ io.on("connection", (socket) => {
                 break;
             }
         }
-
         io.emit("online_users", Array.from(onlineUsers.keys()));
     });
 });
 
 const PORT = process.env.PORT || 5000;
-
-server.listen(PORT, () => {
-    console.log(`Socket server running on port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Socket server running on port ${PORT}`));
 
 process.on("SIGINT", async () => {
     await prisma.$disconnect();
     process.exit(0);
-});
+}); 
