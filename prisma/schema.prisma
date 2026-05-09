@@ -92,6 +92,7 @@ model Users{
   updatedAt        DateTime  @updatedAt
   chatParticipants ChatParticipants[]
   sentMessages     ChatMessage[]
+  sessions  UserSession[]
 }
 model Conversation {
   id               Int   @id @default(autoincrement())
@@ -134,4 +135,14 @@ model ChatMessage {
 
   sender             Users            @relation(fields: [senderId], references: [id], onDelete: Cascade)
   conversation       ChatConversation @relation(fields: [chatConversationId], references: [id], onDelete: Cascade)
+}
+
+model UserSession {
+    id        Int  @id @default(autoincrement())
+    userId    Int
+    duration  Int      
+    endedAt   DateTime
+    createdAt DateTime @default(now())
+
+    user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
