@@ -189,7 +189,7 @@ const page = () => {
                                     }}
                                     className="w-[10%] h-[60%] flex items-center justify-center text-xs border rounded-full shadow-lg font-bold"
                                 >
-                                    {" "}
+                                    
                                     {filteredTasks.length}
                                 </div>
                             </div>
@@ -257,7 +257,6 @@ const page = () => {
                                     }}
                                     className="w-[10%] h-[60%] flex items-center justify-center text-xs border rounded-full shadow-lg font-bold"
                                 >
-                                    {" "}
                                     {filteredTasks.length}
                                 </div>
                             </div>

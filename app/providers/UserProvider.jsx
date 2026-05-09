@@ -12,7 +12,7 @@ const UserProvider = ({ children }) => {
     useEffect(() => {
         const isLoggingOut = sessionStorage.getItem("isLoggingOut");
 
-        if (isLoggingOut === "true") return;   // 💀 BLOCK
+        if (isLoggingOut === "true") return;
 
         if (status !== "authenticated") return;
         if (!session?.user?.email || user) return;

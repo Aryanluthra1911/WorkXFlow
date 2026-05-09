@@ -143,6 +143,5 @@ model UserSession {
     duration  Int      
     endedAt   DateTime
     createdAt DateTime @default(now())
-
     user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
