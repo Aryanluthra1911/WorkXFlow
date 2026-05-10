@@ -75,7 +75,7 @@ export default function ProtectedShell({ children }) {
             <div className="w-auto h-full shadow-md">
                 <SidebarBlock />
             </div>
-            <div className="w-full h-full">
+            <div className="w-full h-full overflow-hidden">
                 <div className="w-full h-[10%] border-b-2 flex items-center justify-evenly pl-3 text-3xl font-bold shadow-md">
                     <div className="w-[80%] h-full flex items-center">
                         {title}

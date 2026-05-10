@@ -13,7 +13,7 @@ const ChatProfileCard = ({
     activeChatId,
 }) => {
     const active = id === idx.id;
-    const [data, setData] = useState();
+    const [data, setData] = useState(null);
     const [MessageLoading, setMessageLoading] = useState(true);
     const [LatestMessage, SetLatestMessage] = useState();
     const [Time, SetTime] = useState();
@@ -28,15 +28,9 @@ const ChatProfileCard = ({
         const minutes = Math.floor(diffMs / (1000 * 60));
         const hours = Math.floor(diffMs / (1000 * 60 * 60));
         const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        if (seconds < 60) {
-            return `${seconds}s`;
-        }
-        if (minutes < 60) {
-            return `${minutes}m`;
-        }
-        if (hours < 24) {
-            return `${hours}h`;
-        }
+        if (seconds < 60) return `${seconds}s`;
+        if (minutes < 60) return `${minutes}m`;
+        if (hours < 24) return `${hours}h`;
         return `${days}d`;
     };
 
@@ -49,7 +43,6 @@ const ChatProfileCard = ({
                 });
                 setData(res.data);
                 SetLatestMessage(res.data.latestmessage);
-                console.log(`Card [${idx.name}] chatId:`, res.data.chatId);
             } catch (error) {
                 console.log("message fetching error");
             } finally {
@@ -62,16 +55,13 @@ const ChatProfileCard = ({
     useEffect(() => {
         if (!data?.chatId) return;
         const socket = getSocket();
-
         const handleLatestMessage = ({ chatId, message }) => {
             if (chatId === data.chatId) {
                 SetLatestMessage(message);
             }
         };
-
         socket.off("latest_message_update", handleLatestMessage);
         socket.on("latest_message_update", handleLatestMessage);
-
         return () => {
             socket.off("latest_message_update");
         };
@@ -83,7 +73,6 @@ const ChatProfileCard = ({
                 SetTime(getTimeAgo());
             }
         }, 30000);
-
         return () => clearInterval(interval);
     }, [LatestMessage]);
 
@@ -95,38 +84,40 @@ const ChatProfileCard = ({
     useEffect(() => {
         if (!data?.chatId) return;
         const socket = getSocket();
-
         const handleUnread = ({ chatId }) => {
             if (chatId === data.chatId && activeChatId !== data.chatId) {
                 setUnreadCount((prev) => prev + 1);
             }
         };
-
         socket.off("new_unread", handleUnread);
         socket.on("new_unread", handleUnread);
-
         return () => {
             socket.off("new_unread", handleUnread);
         };
     }, [data?.chatId, activeChatId]);
 
     useEffect(() => {
-        if (active) {
-            setUnreadCount(0);
-        }
+        if (active) setUnreadCount(0);
     }, [active]);
 
     return (
         <div
-            onClick={async () => {
+            onClick={() => {
+                if (!data?.chatId) return;
                 setid(idx.id);
                 SetChatId(data.chatId);
             }}
-            className={`w-full min-h-15 ${active ? "border-[#2c84db] border-l-4 bg-[#ececec] " : " hover:scale-95 hover:bg-[#f2f2f2] "} rounded-xl  flex justify-around items-center transition-all duration-300 ease-in-out`}
+            className={`w-full min-h-15 ${
+                active
+                    ? "border-[#2c84db] border-l-4 bg-[#ececec]"
+                    : "hover:scale-95 hover:bg-[#f2f2f2]"
+            } rounded-xl flex justify-around items-center transition-all duration-300 ease-in-out cursor-pointer`}
         >
-            <div className=" w-[20%] h-[80%] flex items-center justify-center">
+            <div className="w-[20%] h-[80%] flex items-center justify-center">
                 <div
-                    className={`rounded-full h-10 w-10 border-2 ${active ? "border-gray-300" : ""} flex items-center justify-center font-bold transition-all duration-300 ease-in-out gap-3`}
+                    className={`rounded-full h-10 w-10 border-2 ${
+                        active ? "border-gray-300" : ""
+                    } flex items-center justify-center font-bold transition-all duration-300 ease-in-out`}
                 >
                     {idx.name
                         ?.trim()
@@ -136,18 +127,17 @@ const ChatProfileCard = ({
                         .join("")}
                 </div>
             </div>
-            <div className="w-[60%] h-full text-md font font-bold flex flex-col justify-center px-2">
-                <div className="w-full flex items-center ">
-                    {idx.name?.charAt(0).toUpperCase() + idx.name?.slice(1)}
-                    <div></div>
-
+            <div className="w-[60%] h-full font font-bold flex flex-col justify-center px-2 overflow-hidden">
+                <div className="w-full flex items-center gap-1">
+                    <span className="truncate">
+                        {idx.name?.charAt(0).toUpperCase() + idx.name?.slice(1)}
+                    </span>
                     {isOnline && (
-                        <span className=" w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full" />
+                        <span className="w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full shrink-0" />
                     )}
                 </div>
-
                 {MessageLoading ? (
-                    <div className="text-sm font-medium text-gray-400 h-3 w-30 rounded-2xl bg-gray-300  animate-pulse [animation-duration:1s]" />
+                    <div className="text-sm font-medium text-gray-400 h-3 w-30 rounded-2xl bg-gray-300 animate-pulse [animation-duration:1s]" />
                 ) : (
                     <div className="text-sm font-medium text-gray-400 truncate">
                         {LatestMessage?.content || "Start a conversation..."}
