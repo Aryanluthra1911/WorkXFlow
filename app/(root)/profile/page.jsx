@@ -1,56 +1,82 @@
-"use client"
-import Profile_infocard from '@/components/Profile_infocard'
-import useUserStore from '@/store/user/useUserstore';
-import { useSession } from 'next-auth/react';
-import React, { useEffect } from 'react'
-import api from '@/lib/axios'
-import usePageStore from '@/store/pages/usePageStore';
+"use client";
+import Profile_infocard from "@/components/Profile_infocard";
+import useUserStore from "@/store/user/useUserstore";
+import { useSession } from "next-auth/react";
+import React, { useEffect } from "react";
+import api from "@/lib/axios";
+import usePageStore from "@/store/pages/usePageStore";
 
 const page = () => {
-    const {data:session} = useSession()
-    const user = useUserStore((state)=>state.user)
-    const setUser = useUserStore((state)=>state.setUser)
-    const setActivePage = usePageStore((state)=>state.setActivePage)
-    const setTitle = usePageStore((state)=>state.setTitle)
-    useEffect(()=>{
-        setActivePage("Profile")
-        setTitle("Profile")
-    },[])
-    useEffect(()=>{
-        if(!session?.user?.email) return
-        const fetchdata = async()=>{
+    const { data: session } = useSession();
+    const user = useUserStore((state) => state.user);
+    const setUser = useUserStore((state) => state.setUser);
+    const setActivePage = usePageStore((state) => state.setActivePage);
+    const setTitle = usePageStore((state) => state.setTitle);
+    useEffect(() => {
+        setActivePage("Profile");
+        setTitle("Profile");
+    }, []);
+    useEffect(() => {
+        if (!session?.user?.email) return;
+        const fetchdata = async () => {
             try {
-                const res = await api.get('/Dashboard/fetchUserData' ,{params:{email:session.user.email}})
-                setUser(res.data.data); 
+                const res = await api.get("/Dashboard/fetchUserData", {
+                    params: { email: session.user.email },
+                });
+                setUser(res.data.data);
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
-        }
-        fetchdata()
-    },[session])
-    const profileData = [{info_topic:'Email',info:user?.email},{info_topic:'Phone No.',info:user?.phone},{info_topic:'Years of Experience',info:user?.yearsOfExperience},{info_topic:'Role',info:user?.role},{info_topic:'Joining Date',info:user?.joiningDate},{info_topic:'Task Assigned',info:user?.taskAssigned},{info_topic:'Performance Rating',info:user?.performanceRating},{info_topic:'Project Completed',info:user?.projectCompleted}]
+        };
+        fetchdata();
+    }, [session]);
+    const profileData = [
+        { info_topic: "Email", info: user?.email },
+        { info_topic: "Phone No.", info: user?.phone },
+        { info_topic: "Years of Experience", info: user?.yearsOfExperience },
+        { info_topic: "Role", info: user?.role },
+        { info_topic: "Joining Date", info: user?.joiningDate },
+        { info_topic: "Task Assigned", info: user?.taskAssigned },
+        { info_topic: "Performance Rating", info: user?.performanceRating },
+        { info_topic: "Project Completed", info: user?.projectCompleted },
+    ];
     return (
-        <div className='w-full h-[90%] bg-[#f9fafb] flex flex-col justify-around items-center'>
-            <div className='w-[95%] h-[25%] flex items-center justify-around rounded-2xl bg-white border-2'>
-                <div className='w-[15%] h-full flex items-center justify-start pl-4'>
-                    <img src="data:image/jpeg;base64,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" alt=""  className='w-35 h-35 rounded-full object-cover border-2 border-gray-300'/>
+        <div className="w-full h-[90%] bg-[#f9fafb] flex flex-col justify-around items-center">
+            <div className="w-[95%] h-[25%] flex items-center justify-around rounded-2xl bg-white border-2">
+                <div className="w-[15%] h-full flex items-center justify-center ">
+                    <div className="w-20 h-20 rounded-full text-3xl font-bold bg-gray-200 flex items-center justify-center shadow-lg">
+                        {user?.name ? user.name.charAt(0).toUpperCase() : ""}
+                    </div>
                 </div>
-                <div className='w-[50%] h-full '>
-                    <div className='text-5xl w-full h-[40%] flex justify-start items-center font-semibold'>Aryan Luthra</div>
-                    <div className='text-xl w-full h-[40%] flex justify-start items-center font-semibold text-[#9a9a9a]'>Senior Web Developer</div>
+                <div className="w-[50%] h-full ">
+                    <div className="text-5xl w-full h-[40%] flex justify-start items-center font-semibold">
+                        {user?.name
+                            ? user.name.charAt(0).toUpperCase() +
+                            user.name.slice(1)
+                            : ""}
+                    </div>
+                    <div className="text-xl w-full h-[40%] flex justify-start items-center font-semibold text-[#9a9a9a]">
+                        {user?.role}
+                    </div>
                 </div>
-                <div className='w-[20%] h-[60%]  flex flex-col justify-around items-center'>
-                    <button className=' border w-50 h-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold'> change password</button>
-                    <button className=' border w-50 h-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold'> edit profile</button>
+                <div className="w-[20%] h-[60%]  flex flex-col justify-around items-center">
+                    <button className=" border w-50 h-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold">
+                        {" "}
+                        change password
+                    </button>
+                    <button className=" border w-50 h-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold">
+                        {" "}
+                        edit profile
+                    </button>
                 </div>
             </div>
-            <div className='w-[95%] h-[70%]  rounded-2xl bg-white border-2 flex  justify-around items-start flex-wrap'>
-                {profileData.map((idx,key)=>{
-                    return <Profile_infocard key={key} idx={idx}/>
+            <div className="w-[95%] h-[70%]  rounded-2xl bg-white border-2 flex  justify-around items-start flex-wrap">
+                {profileData.map((idx, key) => {
+                    return <Profile_infocard key={key} idx={idx} />;
                 })}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default page
+export default page;

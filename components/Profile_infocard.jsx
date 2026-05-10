@@ -7,7 +7,7 @@ const Profile_infocard = ({idx}) => {
                 {idx.info_topic}
             </div>
             <div className='h-[50%] w-[60%] text-[#8a8a8a] flex justify-center items-center font-semibold'>
-                {idx.info}
+                {!idx.info ? "-N/A-":idx.info}
             </div>
         </div>
     )

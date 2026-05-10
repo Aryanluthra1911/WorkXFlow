@@ -16,6 +16,7 @@ import useUserStore from "@/store/user/useUserstore";
 
 export function SidebarBlock() {
     const { data: session } = useSession();
+    const user = useUserStore((state) => state.user);
     const [role, setrole] = useState();
     const [Name, setName] = useState("");
     const router = useRouter();
@@ -182,13 +183,9 @@ export function SidebarBlock() {
                             link={{
                                 label: capitalize(Name),
                                 icon: (
-                                    <img
-                                        src="https://assets.aceternity.com/manu.png"
-                                        className="h-7 w-7 shrink-0 rounded-full"
-                                        width={50}
-                                        height={50}
-                                        alt="Avatar"
-                                    />
+                                    <div className="h-7 w-7 rounded-full text-white font-semibold flex items-center justify-center bg-gray-600">
+                                        {user?.name ? user.name.charAt(0).toUpperCase() : ""}
+                                    </div>
                                 ),
                             }}
                         />

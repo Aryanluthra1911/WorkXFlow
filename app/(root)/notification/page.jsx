@@ -1,60 +1,94 @@
-"use client"
-import Notification_card from '@/components/Notification_card'
-import usePageStore from '@/store/pages/usePageStore';
-import React, { useEffect } from 'react'
+"use client";
+import Notification_card from "@/components/Notification_card";
+import usePageStore from "@/store/pages/usePageStore";
+import React, { useEffect } from "react";
 
 const page = () => {
     const notification = [
         {
-            title: "New Message",
-            description: "You received a new message from John.",
-            status:'not seen',
-            time: "2 mins ago"
+            title: "New Client Message",
+            description:
+                "Dr. Mehra sent feedback for the clinic website homepage design and requested a WhatsApp appointment integration.",
+            status: "not seen",
+            time: "2 mins ago",
         },
         {
-            title: "Payment Successful",
-            description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quis nemo dolore iusto fuga totam repellendus in facere maiores consectetur a, id aliquid veritatis aperiam exercitationem cupiditate nostrum nam! Dolores aut voluptatum sunt repudiandae temporibus libero officiis, culpa ad labore et vel explicabo nisi, praesentium illo consequuntur corrupti dolorum nemo. Possimus, illo. Blanditiis ullam magni facere aperiam debitis",
-            status:'not seen',
-            time: "10 mins ago"
+            title: "Project Deployment Successful",
+            description:
+                "WorkXFlow v2.1 has been successfully deployed on Vercel. All APIs and socket connections are running smoothly.",
+            status: "not seen",
+            time: "8 mins ago",
         },
         {
-            title: "New Follower",
-            description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quis nemo dolore iusto fuga totam repellendus in facere maiores consectetur a, id ",
-            status:'seen',
-            time: "30 mins ago"
+            title: "Payment Received",
+            description:
+                "₹25,000 payment received from Visibl.co for the dental clinic website project.",
+            status: "not seen",
+            time: "15 mins ago",
         },
         {
-            title: "Server Update",
-            description: "Scheduled maintenance will occur at 11:00 PM tonight.",
-            status:'seen',
-            time: "1 hour ago"
+            title: "New Team Member Added",
+            description:
+                "Rohit Sharma has been added to the Gold Billing App project as a frontend collaborator.",
+            status: "seen",
+            time: "25 mins ago",
         },
         {
-            title: "Weekly Report Ready",
-            description: "Your weekly performance report is available for review.",
-            status:'seen',
-            time: "3 hours ago"
+            title: "Database Backup Completed",
+            description:
+                "Your Neon PostgreSQL database backup completed successfully without any errors.",
+            status: "seen",
+            time: "40 mins ago",
         },
         {
-            title: "Password Changed",
-            description: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quis nemo dolore iusto fuga totam repellendus in facere maiores consectetur a, id aliquid veritatis aperiam exercitationem cupiditate nostrum nam! Dolores aut voluptatum sunt repudiandae temporibus libero officiis, culpa ad labore et vel explicabo nisi, praesentium illo consequuntur corrupti dolorum nemo. Possimus, illo. Blanditiis ullam magni facere aperiam debitis cumque, rerum veniam eum, fuga vitae impedit voluptatum sapiente corrupti inventore molestiae nam error beatae veritatis optio quisquam cum enim non placeat dolor. Modi, amet iusto non ratione in harum, distinctio commodi reprehenderit minus necessitatibus quisquam explicabo doloribus error excepturi assumenda illo quaerat..",
-            status:'seen',
-            time: "Yesterday"
-        }
+            title: "Bug Report Submitted",
+            description:
+                "A user reported that the latest message preview is not updating instantly in the chat sidebar component.",
+            status: "seen",
+            time: "1 hour ago",
+        },
+        {
+            title: "Server Maintenance Scheduled",
+            description:
+                "Socket server maintenance is scheduled tonight at 11:30 PM IST. Temporary reconnection issues may occur.",
+            status: "seen",
+            time: "2 hours ago",
+        },
+        {
+            title: "New Login Detected",
+            description:
+                "Your account was accessed from a new Chrome browser on Windows in Delhi, India.",
+            status: "seen",
+            time: "Yesterday",
+        },
+        {
+            title: "Weekly Analytics Ready",
+            description:
+                "Your project dashboard analytics report for this week is now available with updated traffic and API usage insights.",
+            status: "seen",
+            time: "Yesterday",
+        },
+        {
+            title: "Task Completed",
+            description:
+                "The responsive notification panel UI has been completed and synced with the backend successfully.",
+            status: "seen",
+            time: "2 days ago",
+        },
     ];
-    const setActivePage = usePageStore((state)=>state.setActivePage)
-    const setTitle = usePageStore((state)=>state.setTitle)
-    useEffect(()=>{
-        setActivePage("Notification")
-        setTitle("Notification")
-    },[])
+    const setActivePage = usePageStore((state) => state.setActivePage);
+    const setTitle = usePageStore((state) => state.setTitle);
+    useEffect(() => {
+        setActivePage("Notification");
+        setTitle("Notification");
+    }, []);
     return (
-        <div className='bg-[#e9ecef] w-full h-[90%] flex flex-col gap-5 items-center overflow-y-auto no-scrollbar pt-4'>
-            {notification.map((idx,key)=>{
-                return <Notification_card key={key} idx={idx}/>
+        <div className="bg-[#e9ecef] w-full h-[90%] flex flex-col gap-5 items-center overflow-y-auto no-scrollbar pt-4">
+            {notification.map((idx, key) => {
+                return <Notification_card key={key} idx={idx} />;
             })}
         </div>
-    )
-}
+    );
+};
 
-export default page
+export default page;
