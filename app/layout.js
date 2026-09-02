@@ -38,7 +38,10 @@ export default function RootLayout({ children }) {
           pauseOnFocusLoss
           draggable
           pauseOnHover
-          theme="dark"
+          theme="light"
+          toastClassName="custom-toast"
+          bodyClassName="custom-toast-body"
+          progressClassName="custom-toast-progress"
         />
       </body>
     </html>
