@@ -306,44 +306,53 @@ const page = () => {
             <Navbar className={"w-full h-20 border fixed top-0 z-50"} />
             <div
                 id="home"
-                className=" w-full flex flex-col items-center pt-24 gap-15"
+                className="w-full flex flex-col items-center pt-24 pb-20 gap-10 px-6"
             >
-                <div className=" py-1 border-2 border-[#bfdbfe] flex items-center justify-center text-sm font-semibold rounded-2xl px-4 text-[#2563eb] gap-3 shadow-md bg-[#eff6ff]">
+                {/* Badge */}
+                <div className="py-1.5 border border-[#bfdbfe] flex items-center justify-center text-sm font-semibold rounded-full px-4 text-[#2563eb] gap-2.5 shadow-sm bg-[#eff6ff]">
                     <div className="w-2 h-2 rounded-full bg-[#2563eb] animate-pulse [animation-duration:1.2s]" />
                     Powered by Gemini AI · Real-time Collaboration
                 </div>
-                <div className="font-extrabold font-sans text-7xl w-[80%] flex flex-col items-center justify-center">
-                    One Platform for
-                    <div className=" flex gap-2">
-                        <p className="text-[#2563eb]">Admins,</p>
-                        <p className="text-[#059669]">Managers</p>&
-                        <p className="text-[#7c3aed]">Members</p>
+
+                {/* Heading */}
+                <div className="font-extrabold font-sans text-5xl sm:text-6xl md:text-7xl max-w-4xl flex flex-col items-center justify-center text-center leading-tight gap-2">
+                    <span className="text-gray-950">One Platform for</span>
+                    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                        <span className="text-[#2563eb]">Admins,</span>
+                        <span className="text-[#059669]">Managers</span>
+                        <span className="text-gray-950">&</span>
+                        <span className="text-[#7c3aed]">Members</span>
                     </div>
                 </div>
 
-                <div className="w-[50%] h-auto text-md text-ceneter justify-center text-center font-semibold text-[#6b7280]">
+                {/* Subtext */}
+                <div className="max-w-2xl text-base sm:text-lg text-center font-medium text-[#6b7280] leading-relaxed">
                     WorkXflow is an intelligent workflow platform that enables structured team collaboration through role-based access, Kanban task management, real-time communication, and AI-powered assistance, helping teams stay aligned, track progress efficiently, and deliver faster with clarity.
                 </div>
-                <div className=" flex gap-5">
+
+                {/* CTA Buttons */}
+                <div className="flex flex-wrap items-center justify-center gap-4 mt-2">
                     <button
                         onClick={() => {
                             router.push("/signin");
                         }}
-                        className="md:flex items-center gap-2.5 bg-linear-to-r from-zinc-950 to-zinc-500 text-zinc-50 hover:text-zinc-200 text-md px-5 hover:-translate-y-2 py-2 rounded-full border-0 font-semibold shadow-md  transform transition-all duration-500  hover:shadow-xl"
+                        className="flex items-center gap-2.5 bg-gradient-to-r from-zinc-950 to-zinc-700 text-zinc-50 hover:text-white text-[15px] px-6 py-3 rounded-full border-0 font-semibold shadow-md transform transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
                     >
                         Login
                     </button>
                     <button
                         onClick={() => GetStarted()}
-                        className=" md:flex items-center gap-2.5 bg-linear-to-r from-zinc-950 to-zinc-500 text-zinc-50 hover:text-zinc-200 text-md pl-5 pr-2 py-2 rounded-full border-0 font-semibold shadow-md hover:-translate-y-2 transform transition-all duration-500"
+                        className="flex items-center gap-3 bg-gradient-to-r from-zinc-950 to-zinc-700 text-zinc-50 hover:text-white text-[15px] pl-6 pr-2 py-2 rounded-full border-0 font-semibold shadow-md transform transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
                     >
                         Get started
-                        <span className="size-9 rounded-full bg-white flex items-center justify-center">
+                        <span className="size-9 shrink-0 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
                             <FaArrowRight size={15} className="text-black" />
                         </span>
                     </button>
                 </div>
-                <div className="flex gap-5">
+
+                {/* Role badges */}
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
                     {roleCardData.map((idx, key) => {
                         const Icon = idx.svg;
                         return (
@@ -354,7 +363,7 @@ const page = () => {
                                     backgroundColor: idx.bg,
                                     color: idx.text,
                                 }}
-                                className="px-5 py-1 rounded-full gap-4 flex items-center justify-center font-semibold"
+                                className="px-4 py-1.5 rounded-full gap-2 flex items-center justify-center font-semibold text-sm shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
                             >
                                 <Icon size={idx.size} />
                                 {idx.title} - {idx.responsibility}

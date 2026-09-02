@@ -1,13 +1,14 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { act, useState } from "react";
+import React, { useState } from "react";
 import { useRef, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
+
 const Navbar = ({ className }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const refs = useRef([]);
     const [style, setStyle] = useState({});
-    const { status } = useSession()
+    const { status } = useSession();
     const navItems = [
         { title: "Home", link: "#home", id: 1 },
         { title: "Features", link: "#features", id: 2 },
@@ -17,6 +18,7 @@ const Navbar = ({ className }) => {
     ];
     const router = useRouter();
     const [active, setActive] = useState(1);
+
     useEffect(() => {
         const index = navItems.findIndex((item) => item.id === active);
         const el = refs.current[index];
@@ -28,14 +30,15 @@ const Navbar = ({ className }) => {
             });
         }
     }, [active]);
-    const GetStarted = ()=>{
-        if(status === "authenticated"){
-            router.push("/dashboard")
+
+    const GetStarted = () => {
+        if (status === "authenticated") {
+            router.push("/dashboard");
+        } else {
+            router.push("/register");
         }
-        else{
-            router.push("/register")
-        }
-    }
+    };
+
     return (
         <div className={className}>
             <style>
@@ -46,18 +49,22 @@ const Navbar = ({ className }) => {
                     }
                 `}
             </style>
-            <nav className="w-full h-full bg-white px-6 md:px-12 lg:px-24 xl:px-40 py-4 flex items-center justify-between">
-                <div onClick={()=>router.push("/")} className="text-3xl font-extrabold bg-linear-to-r from-zinc-950 to-zinc-500 text-transparent bg-clip-text ">
+            <nav className="w-full h-full bg-white/95 backdrop-blur-sm px-6 md:px-12 lg:px-24 xl:px-40 py-4 flex items-center justify-between border-b border-zinc-100 relative">
+                <div
+                    onClick={() => router.push("/")}
+                    className="text-3xl font-extrabold bg-linear-to-r from-zinc-950 to-zinc-500 text-transparent bg-clip-text cursor-pointer"
+                >
                     WorkXflow
                 </div>
-                <div className="hidden md:flex relative items-center bg-zinc-100 border border-zinc-200 rounded-full px-1 py-1 gap-2">
+
+                <div className="hidden lg:flex relative items-center bg-zinc-100 border border-zinc-200 rounded-full px-1 py-1 gap-2">
                     <div
-                        className="absolute shadow-lg top-1 bottom-1 bg-white border-2 border-zinc-200 rounded-full transition-all duration-600 ease-in-out"
+                        className="absolute shadow-md top-1 bottom-1 bg-white border border-zinc-200 rounded-full transition-all duration-300 ease-in-out"
                         style={style}
                     />
                     {navItems.map((idx, key) => (
                         <div
-                            key={key}
+                            key={idx.id}
                             ref={(el) => (refs.current[key] = el)}
                             onClick={() => {
                                 setActive(idx.id);
@@ -66,63 +73,69 @@ const Navbar = ({ className }) => {
                             className={`relative px-4 py-1.5 rounded-full text-sm z-10 cursor-pointer font-semibold transition-colors duration-300 ${
                                 idx.id === active
                                     ? "text-zinc-800 font-bold"
-                                    : "text-zinc-500 hover:text-zinc-400"
+                                    : "text-zinc-500 hover:text-zinc-700"
                             }`}
                         >
                             {idx.title}
                         </div>
                     ))}
                 </div>
-                <button onClick={()=>GetStarted()} className="hidden md:flex items-center gap-2.5 bg-linear-to-r from-zinc-950 to-zinc-500 text-zinc-50 hover:text-zinc-200 text-sm pl-5 pr-2 py-2 rounded-full cursor-pointer border-0 font-semibold hover:-translate-y-1 transform transition-all duration-500">
+
+                <button
+                    onClick={() => GetStarted()}
+                    className="hidden lg:flex items-center gap-2.5 bg-linear-to-r from-zinc-950 to-zinc-700 text-zinc-50 hover:text-white text-sm pl-5 pr-2 py-2 rounded-full cursor-pointer border-0 font-semibold shadow-sm hover:-translate-y-0.5 hover:shadow-lg transform transition-all duration-300 active:translate-y-0"
+                >
                     Get started
-                    <span className="size-7 rounded-full bg-white flex items-center justify-center">
-                        <FaArrowRight size={15} className="text-black"/>
+                    <span className="size-7 shrink-0 rounded-full bg-white flex items-center justify-center">
+                        <FaArrowRight size={13} className="text-black" />
                     </span>
                 </button>
+
                 <button
                     onClick={() => setMenuOpen(!menuOpen)}
-                    className="md:hidden flex flex-col gap-1.5 cursor-pointer bg-transparent border-0 p-1"
+                    className="lg:hidden flex flex-col gap-1.5 cursor-pointer bg-transparent border-0 p-1"
+                    aria-label="Toggle menu"
                 >
                     <span
-                        className={`block w-6 h-0.5 bg-zinc-800 transition-transform ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
+                        className={`block w-6 h-0.5 bg-zinc-800 transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
                     ></span>
                     <span
-                        className={`block w-6 h-0.5 bg-zinc-800 transition-opacity ${menuOpen ? "opacity-0" : ""}`}
+                        className={`block w-6 h-0.5 bg-zinc-800 transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`}
                     ></span>
                     <span
-                        className={`block w-6 h-0.5 bg-zinc-800 transition-transform ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
+                        className={`block w-6 h-0.5 bg-zinc-800 transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
                     ></span>
                 </button>
 
                 {menuOpen && (
-                    <div className="absolute top-full left-0 w-full bg-white border-t border-zinc-200 flex flex-col p-5 gap-1 md:hidden z-50">
+                    <div className="absolute top-full left-0 w-full bg-white border-t border-zinc-200 shadow-lg flex flex-col p-5 gap-1 lg:hidden z-50">
                         {navItems.map((item) => (
                             <a
-                                key={item}
-                                href="#"
-                                className={`px-4 py-2.5 rounded-lg text-sm ${item === "Products" ? "bg-zinc-50 font-medium text-zinc-800" : "text-zinc-500 hover:bg-zinc-50"}`}
+                                key={item.id}
+                                href={item.link}
+                                onClick={() => {
+                                    setActive(item.id);
+                                    setMenuOpen(false);
+                                }}
+                                className={`px-4 py-2.5 rounded-lg text-sm transition-colors duration-200 ${
+                                    item.id === active
+                                        ? "bg-zinc-50 font-semibold text-zinc-800"
+                                        : "text-zinc-500 hover:bg-zinc-50"
+                                }`}
                             >
-                                {item}
+                                {item.title}
                             </a>
                         ))}
-                        <button className="flex items-center justify-center gap-2.5 bg-linear-to-r from-zinc-950 to-zinc-500 text-zinc-50 text-sm font-medium px-5 py-2.5 rounded-full cursor-pointer border-0 mt-3 w-fit">
+                        <button
+                            onClick={() => {
+                                setMenuOpen(false);
+                                GetStarted();
+                            }}
+                            className="flex items-center justify-center gap-2.5 bg-linear-to-r from-zinc-950 to-zinc-700 text-zinc-50 text-sm font-medium px-5 py-2.5 rounded-full cursor-pointer border-0 mt-3 w-fit shadow-sm hover:shadow-md transition-all duration-300"
+                        >
                             Get started
-                            <span className="size-7 rounded-full bg-white flex items-center justify-center">
-                                <svg
-                                    width="12"
-                                    height="10"
-                                    viewBox="0 0 12 10"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M.6 4.602h10m-4-4 4 4-4 4"
-                                        stroke="#3f3f47"
-                                        strokeWidth="1.2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    />
-                                </svg>
+                            <span className="size-7 shrink-0 rounded-full bg-white flex items-center justify-center">
+                                <FaArrowRight size={12} className="text-black" />
                             </span>
                         </button>
                     </div>
