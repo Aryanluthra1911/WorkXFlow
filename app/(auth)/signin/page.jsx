@@ -35,91 +35,75 @@ const page = () => {
                 toast.success("signin successfull");
                 router.push("/dashboard");
             }
-            
+
         } catch (error) {
             console.log(error)
         }finally{
             setLoading(false)
-            
+
         }
     };
 
     return (
-        <div className="flex flex-col justify-center items-center h-screen w-screen bg-gradient-to-br from-blue-50 to-white ">
-            <div className="w-full h-[10%] bg-white flex items-center justify-between p-2 px-4">
+        <div className="min-h-screen w-screen relative flex items-center justify-center bg-gradient-to-br from-blue-50 to-white">
+            <div className="fixed top-0 left-0 w-full z-50 flex items-center justify-between p-2 px-4">
                 <div
-                    onClick={() => {
-                        router.push("/");
-                    }}
-                    className=" p-4 text-3xl font-extrabold bg-linear-to-r from-zinc-950 to-zinc-500 text-transparent bg-clip-text "
+                    onClick={() => router.push("/")}
+                    className="p-4 text-3xl font-extrabold bg-linear-to-r from-zinc-950 to-zinc-500 text-transparent bg-clip-text cursor-pointer"
                 >
                     WorkXflow
                 </div>
-                <div
-                    onClick={() => {
-                        router.push("/");
-                    }}
-                    className="flex  items-center justify-center gap-1 p-2 font-semibold text-gray-600 hover:text-black transform transition-all duration-500"
-                >
-                    <FaArrowLeft size={13} />
-                    Back
-                </div>
             </div>
-            <div className="w-full h-[90%] flex items-center justify-center">
-                <div className="w-[30%] flex flex-col items-center justify-around bg-white rounded-2xl py-10 shadow-2xl border-2 gap-5">
-                    <div
-                        className={
-                            "w-full flex items-center justify-center font-bold text-xl italic"
-                        }
-                    >
+
+            <div className="w-full flex items-center justify-center px-4">
+                <div className="w-full max-w-sm flex flex-col items-center justify-around bg-white rounded-2xl py-6 px-2 shadow-2xl border-2 gap-4">
+                    <div className="w-full flex items-center justify-center font-bold text-lg italic">
                         Sign in to your account
                     </div>
-                    <div className="w-[85%] h-auto">
+
+                    <div className="w-[88%] h-auto">
                         <form onSubmit={handleSubmit}>
-                            <div className="flex flex-col gap-6">
-                                <div className="grid gap-2">
+                            <div className="flex flex-col gap-3">
+                                <div className="grid gap-1">
                                     <Label htmlFor="email">Email</Label>
                                     <Input
-                                        className={"bg-white"}
+                                        className="bg-white"
                                         id="email"
                                         type="email"
                                         placeholder="name@company.com"
-                                        onChange={(e) =>
-                                            setEmail(e.target.value)
-                                        }
+                                        onChange={(e) => setEmail(e.target.value)}
                                         required
                                     />
                                 </div>
-                                <div className="grid gap-2">
-                                    <div className="flex items-center">
-                                        <Label htmlFor="password">
-                                            Password
-                                        </Label>
-                                        <a
-                                            href="#"
-                                            className="ml-auto inline-block text-xs underline-offset-4 hover:underline transform transition-all duration-500 text-gray-500 hover:text-black font-semibold"
-                                        >
-                                            Forgot your password?
-                                        </a>
-                                    </div>
+
+                                <div className="grid gap-1">
+                                    <Label htmlFor="password">Password</Label>
                                     <Input
                                         id="password"
                                         type="password"
                                         required
-                                        className={"bg-white"}
-                                        onChange={(e) =>
-                                            setPassword(e.target.value)
-                                        }
+                                        className="bg-white"
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                             </div>
-                            <div
-                                onClick={() => router.push("/register")}
-                                className="w-full flex items-center justify-end text-xs font-semibold pt-4 on hover:underline transform transition-all duration-500 text-gray-500 hover:text-black"
-                            >
-                                Don't have an account?
+
+                            <div className="w-full flex items-center justify-between text-xs font-semibold pt-3">
+                                <a
+                                    href="#"
+                                    className="underline-offset-4 hover:underline transform transition-all duration-500 text-gray-500 hover:text-black"
+                                >
+                                    Forgot your password?
+                                </a>
+                                <div
+                                    onClick={() => router.push("/register")}
+                                    className="hover:underline transform transition-all duration-500 text-gray-500 hover:text-black cursor-pointer"
+                                >
+                                    Don't have an account?
+                                </div>
                             </div>
-                            <Button type="submit" className="w-full mt-6">
+
+                            <Button type="submit" className="w-full mt-3" disabled={loading}>
                                 {loading ? "Verifying..." : "Signin"}
                             </Button>
                         </form>
