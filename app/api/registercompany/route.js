@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { name, c_name, email, password, role, phoneNo } = body;
+        const { name, c_name, email, password, role, phoneno } = body;
         const Emailexists = await prisma.users.findUnique({ where: { email } });
         const Companyexists = await prisma.users.findFirst({
             where: { c_name },
@@ -29,7 +29,7 @@ export async function POST(req) {
                 email,
                 password: hashedPass,
                 role,
-                phone: phoneNo,
+                phone: phoneno,
             },
         });
         return NextResponse.json(

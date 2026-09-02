@@ -60,9 +60,9 @@ const page = () => {
                 </div>
                 <div onClick={()=>{
                     router.push("/")
-                }} className="flex  items-center justify-center gap-3 p-2 font-semibold text-gray-600 hover:text-black transform transition-all duration-500">
+                }} className="flex  items-center justify-center gap-1 p-2 font-semibold text-gray-600 hover:text-black transform transition-all duration-500">
                     <FaArrowLeft size={13}/>
-                    Back To Home
+                    Back
                 </div>
             </div>
             <div className="w-full h-[90%] flex items-center justify-center">
@@ -125,11 +125,16 @@ const page = () => {
                                     <Input
                                         className={"bg-white"}
                                         id="PhoneNo"
-                                        type="phone"
+                                        type="tel"
+                                        inputMode="numeric"
                                         placeholder="00000 00000"
+                                        value={phoneno}
                                         onChange={(e) =>
-                                            setPhoneNo(e.target.value)
+                                            setPhoneNo(
+                                                e.target.value.replace(/\D/g, "")
+                                            )
                                         }
+                                        maxLength={10}
                                         required
                                     />
                                 </div>
@@ -162,8 +167,15 @@ const page = () => {
                             >
                                 Already have an Account?
                             </div>
-                            <Button type="submit" className="w-full mt-6">
-                                {loading ? "Creating..." : "Create Account"}
+                            <Button type="submit" className="w-full mt-6" disabled={loading}>
+                                {loading ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                        <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        Creating...
+                                    </span>
+                                ) : (
+                                    "Create Account"
+                                )}
                             </Button>
                             
                         </form>

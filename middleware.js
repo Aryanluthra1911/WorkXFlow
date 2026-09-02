@@ -4,7 +4,10 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(req) {
     const { pathname } = req.nextUrl;
 
-    if (pathname.startsWith("/api/auth")) {
+    if (
+        pathname.startsWith("/api/auth") ||
+        pathname.startsWith("/api/registercompany")
+    ) {
         return NextResponse.next();
     }
 

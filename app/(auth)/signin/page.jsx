@@ -59,10 +59,10 @@ const page = () => {
                     onClick={() => {
                         router.push("/");
                     }}
-                    className="flex  items-center justify-center gap-3 p-2 font-semibold text-gray-600 hover:text-black transform transition-all duration-500"
+                    className="flex  items-center justify-center gap-1 p-2 font-semibold text-gray-600 hover:text-black transform transition-all duration-500"
                 >
                     <FaArrowLeft size={13} />
-                    Back To Home
+                    Back
                 </div>
             </div>
             <div className="w-full h-[90%] flex items-center justify-center">
