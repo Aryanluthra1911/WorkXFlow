@@ -5,6 +5,18 @@ import { useSession } from "next-auth/react";
 import React, { useEffect } from "react";
 import api from "@/lib/axios";
 import usePageStore from "@/store/pages/usePageStore";
+import {
+    MdEmail,
+    MdPhone,
+    MdWorkOutline,
+    MdOutlineBadge,
+    MdOutlineCalendarToday,
+    MdOutlineAssignment,
+    MdOutlineStarRate,
+    MdOutlineCheckCircle,
+} from "react-icons/md";
+
+const AVATAR_COLOR = "bg-slate-800";
 
 const page = () => {
     const { data: session } = useSession();
@@ -12,10 +24,12 @@ const page = () => {
     const setUser = useUserStore((state) => state.setUser);
     const setActivePage = usePageStore((state) => state.setActivePage);
     const setTitle = usePageStore((state) => state.setTitle);
+
     useEffect(() => {
         setActivePage("Profile");
         setTitle("Profile");
     }, []);
+
     useEffect(() => {
         if (!session?.user?.email) return;
         const fetchdata = async () => {
@@ -30,50 +44,58 @@ const page = () => {
         };
         fetchdata();
     }, [session]);
+
     const profileData = [
-        { info_topic: "Email", info: user?.email },
-        { info_topic: "Phone No.", info: user?.phone },
-        { info_topic: "Years of Experience", info: user?.yearsOfExperience },
-        { info_topic: "Role", info: user?.role },
-        { info_topic: "Joining Date", info: user?.joiningDate },
-        { info_topic: "Task Assigned", info: user?.taskAssigned },
-        { info_topic: "Performance Rating", info: user?.performanceRating },
-        { info_topic: "Project Completed", info: user?.projectCompleted },
+        { info_topic: "Email", info: user?.email, icon: MdEmail },
+        { info_topic: "Phone No.", info: user?.phone, icon: MdPhone },
+        { info_topic: "Years of Experience", info: user?.yearsOfExperience, icon: MdWorkOutline },
+        { info_topic: "Role", info: user?.role, icon: MdOutlineBadge },
+        { info_topic: "Joining Date", info: user?.joiningDate, icon: MdOutlineCalendarToday },
+        { info_topic: "Task Assigned", info: user?.taskAssigned, icon: MdOutlineAssignment },
+        { info_topic: "Performance Rating", info: user?.performanceRating, icon: MdOutlineStarRate },
+        { info_topic: "Project Completed", info: user?.projectCompleted, icon: MdOutlineCheckCircle },
     ];
+
     return (
-        <div className="w-full h-[90%] bg-[#f9fafb] flex flex-col justify-around items-center">
-            <div className="w-[95%] h-[25%] flex items-center justify-around rounded-2xl bg-white border-2">
-                <div className="w-[15%] h-full flex items-center justify-center ">
-                    <div className="w-20 h-20 rounded-full text-3xl font-bold bg-gray-200 flex items-center justify-center shadow-lg">
+        <div className="w-full h-[90%] bg-[#f9fafb] flex flex-col gap-4 p-4 overflow-hidden">
+
+            {/* Profile Header Card */}
+            <div className="w-full shrink-0 rounded-2xl bg-white border border-gray-200 shadow-sm p-6 flex items-center justify-between gap-6">
+                <div className="flex items-center gap-5 min-w-0">
+                    <div
+                        className={`w-20 h-20 shrink-0 rounded-full ${AVATAR_COLOR} text-white text-3xl font-bold flex items-center justify-center shadow-md`}
+                    >
                         {user?.name ? user.name.charAt(0).toUpperCase() : ""}
                     </div>
-                </div>
-                <div className="w-[50%] h-full ">
-                    <div className="text-5xl w-full h-[40%] flex justify-start items-center font-semibold">
-                        {user?.name
-                            ? user.name.charAt(0).toUpperCase() +
-                            user.name.slice(1)
-                            : ""}
+                    <div className="min-w-0">
+                        <div className="text-3xl font-bold text-gray-900 truncate">
+                            {user?.name
+                                ? user.name.charAt(0).toUpperCase() + user.name.slice(1)
+                                : ""}
+                        </div>
+                        <div className="mt-1 inline-flex items-center px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-sm font-semibold">
+                            {user?.role}
+                        </div>
                     </div>
-                    <div className="text-xl w-full h-[40%] flex justify-start items-center font-semibold text-[#9a9a9a]">
-                        {user?.role}
-                    </div>
                 </div>
-                <div className="w-[20%] h-[60%]  flex flex-col justify-around items-center">
-                    <button className=" border w-50 h-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold">
-                        {" "}
-                        change password
+
+                <div className="flex flex-col gap-2 shrink-0">
+                    <button className="w-44 h-10 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-colors duration-200 shadow-sm">
+                        Change Password
                     </button>
-                    <button className=" border w-50 h-10 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-semibold">
-                        {" "}
-                        edit profile
+                    <button className="w-44 h-10 rounded-xl border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold text-sm transition-colors duration-200">
+                        Edit Profile
                     </button>
                 </div>
             </div>
-            <div className="w-[95%] h-[70%]  rounded-2xl bg-white border-2 flex  justify-around items-start flex-wrap">
-                {profileData.map((idx, key) => {
-                    return <Profile_infocard key={key} idx={idx} />;
-                })}
+
+            {/* Profile Details Card */}
+            <div className="w-full flex-1 rounded-2xl bg-white border border-gray-200 shadow-sm p-6 overflow-y-auto no-scrollbar">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {profileData.map((idx, key) => (
+                        <Profile_infocard key={key} idx={idx} />
+                    ))}
+                </div>
             </div>
         </div>
     );

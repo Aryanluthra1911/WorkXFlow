@@ -3,6 +3,9 @@ import api from "@/lib/axios";
 import { getSocket } from "@/lib/socket";
 import React, { useEffect, useState } from "react";
 
+// Single fixed avatar color for everyone
+const AVATAR_COLOR = "bg-slate-800";
+
 const ChatProfileCard = ({
     idx,
     id,
@@ -107,17 +110,15 @@ const ChatProfileCard = ({
                 setid(idx.id);
                 SetChatId(data.chatId);
             }}
-            className={`w-full min-h-15 ${
+            className={`w-full min-h-16 px-2 flex items-center gap-3 rounded-xl cursor-pointer transition-all duration-200 ease-out ${
                 active
-                    ? "border-[#2c84db] border-l-4 bg-[#ececec]"
-                    : "hover:scale-95 hover:bg-[#f2f2f2]"
-            } rounded-xl flex justify-around items-center transition-all duration-300 ease-in-out cursor-pointer`}
+                    ? "bg-white shadow-sm ring-1 ring-sky-100 border-l-4 border-sky-500"
+                    : "border-l-4 border-transparent hover:bg-white/70 hover:shadow-sm"
+            }`}
         >
-            <div className="w-[20%] h-[80%] flex items-center justify-center">
+            <div className="relative shrink-0">
                 <div
-                    className={`rounded-full h-10 w-10 border-2 ${
-                        active ? "border-gray-300" : ""
-                    } flex items-center justify-center font-bold transition-all duration-300 ease-in-out`}
+                    className={`h-11 w-11 rounded-full ${AVATAR_COLOR} flex items-center justify-center font-bold text-white text-sm shadow-sm`}
                 >
                     {idx.name
                         ?.trim()
@@ -126,31 +127,37 @@ const ChatProfileCard = ({
                         .map((w) => w[0].toUpperCase())
                         .join("")}
                 </div>
+                {isOnline && (
+                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full" />
+                )}
+                {unreadCount > 0 && (
+                    <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center bg-sky-500 text-[10px] font-bold text-white shadow">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                    </div>
+                )}
             </div>
-            <div className="w-[60%] h-full font font-bold flex flex-col justify-center px-2 overflow-hidden">
-                <div className="w-full flex items-center gap-1">
-                    <span className="truncate">
-                        {idx.name?.charAt(0).toUpperCase() + idx.name?.slice(1)}
-                    </span>
-                    {isOnline && (
-                        <span className="w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full shrink-0" />
-                    )}
-                </div>
+
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
+                <span className="truncate font-semibold text-[15px] text-gray-800">
+                    {idx.name?.charAt(0).toUpperCase() + idx.name?.slice(1)}
+                </span>
                 {MessageLoading ? (
-                    <div className="text-sm font-medium text-gray-400 h-3 w-30 rounded-2xl bg-gray-300 animate-pulse [animation-duration:1s]" />
+                    <div className="text-sm font-medium text-gray-400 h-3 w-28 mt-1 rounded-full bg-gray-200 animate-pulse [animation-duration:1s]" />
                 ) : (
-                    <div className="text-sm font-medium text-gray-400 truncate">
+                    <div
+                        className={`text-sm truncate ${
+                            unreadCount > 0
+                                ? "font-semibold text-gray-700"
+                                : "font-normal text-gray-400"
+                        }`}
+                    >
                         {LatestMessage?.content || "Start a conversation..."}
                     </div>
                 )}
             </div>
-            <div className="w-[20%] h-full flex flex-col items-center justify-center gap-2">
-                {unreadCount > 0 && (
-                    <div className="text-sm h-5 w-5 rounded-full flex items-center justify-center bg-green-400 font-semibold text-white">
-                        {unreadCount > 9 ? "9+" : unreadCount}
-                    </div>
-                )}
-                <div className="text-xs px-2 text-gray-400">{Time}</div>
+
+            <div className="text-xs text-gray-400 shrink-0 self-start pt-1">
+                {Time}
             </div>
         </div>
     );
