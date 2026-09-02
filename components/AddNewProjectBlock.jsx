@@ -122,17 +122,19 @@ function ProjectModel({onClose}){
                 orgId:id
             })
             if(res.data.success){
-                toast.success(res.data.message);
+                toast.success(res.data.message || "Project added successfully.");
                 settitle('')
                 setdescription('')
                 setorganisation('')
                 setloading(false)
                 onClose()
+            } else {
+                toast.error(res.data.message || "Failed to add project. Please try again.");
             }
         }catch (err) {
-            console.error('register error:', err);
+            console.error('add project error:', err);
             console.log(err?.response?.data)
-            toast.error(err?.response?.data?.message)
+            toast.error(err?.response?.data?.message || "Something went wrong while adding the project. Please try again.");
         }finally {
             setloading(false);
         }

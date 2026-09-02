@@ -84,7 +84,7 @@ const page = () => {
                 role:'User'
             });
             if(!messageRes.data.success){
-                toast.error(messageRes.data.message);
+                toast.error(messageRes.data.message || "Failed to send message. Please try again.");
                 return;
             }
 
@@ -110,6 +110,7 @@ const page = () => {
         }
         }catch(err){
             console.log(err)
+            toast.error("Something went wrong while contacting the assistant. Please try again.");
             setactive(false)
         }finally{
             setSearching(false)

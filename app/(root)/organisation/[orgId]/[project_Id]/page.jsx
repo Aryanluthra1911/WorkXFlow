@@ -16,6 +16,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { DragOverlay } from "@dnd-kit/core";
 import useUserStore from "@/store/user/useUserstore";
 import usePageStore from "@/store/pages/usePageStore";
+import { toast } from "react-toastify";
 
 const AVATAR_COLORS = [
     "bg-emerald-700",
@@ -118,8 +119,15 @@ const page = () => {
                 taskId: activeId,
                 status: newStatus,
             });
+            toast.success("Task status updated successfully.");
         } catch (error) {
             console.log(error);
+            toast.error("Failed to update task status. Please try again.");
+            settasks((prev) =>
+                prev.map((task) =>
+                    task.id === activeId ? { ...task, status: taskToMove.status } : task,
+                ),
+            );
         }
     };
     const Column = ({ column, tasks, children }) => {

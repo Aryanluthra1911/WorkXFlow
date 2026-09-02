@@ -32,7 +32,7 @@ const page = () => {
                 phoneno,
             });
             if (res.data.success) {
-                toast.success(res.data.message);
+                toast.success(res.data.message || "Company registered successfully.");
                 await signIn("credentials", {
                     redirect: false,
                     email,
@@ -40,12 +40,12 @@ const page = () => {
                 });
                 router.push("/dashboard");
             } else {
-                toast.error(res.data.message);
+                toast.error(res.data.message || "Registration failed. Please try again.");
             }
         } catch (err) {
             console.error("register error:", err);
             console.log(err?.response?.data);
-            toast.error(err?.response?.data?.message);
+            toast.error(err?.response?.data?.message || "Something went wrong while registering. Please try again.");
         } finally {
             setloading(false);
         }

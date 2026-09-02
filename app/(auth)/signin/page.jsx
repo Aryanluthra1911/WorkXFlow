@@ -26,18 +26,19 @@ const page = () => {
                 password,
             });
             if (res?.error) {
-                toast.error(res.error);
+                toast.error("Invalid email or password. Please try again.");
                 setError(res.error);
                 setLoading(false);
                 return;
             }
             else{
-                toast.success("signin successfull");
+                toast.success("Signed in successfully.");
                 router.push("/dashboard");
             }
 
         } catch (error) {
             console.log(error)
+            toast.error("Something went wrong while signing in. Please try again.");
         }finally{
             setLoading(false)
 

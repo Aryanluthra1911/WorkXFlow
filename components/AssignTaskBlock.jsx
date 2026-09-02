@@ -118,16 +118,18 @@ function TaskModel({onClose}){
         try{
             const res = await api.post('/Dashboard/createTask',{title,description,dueDate,assignedTo,assignedToId,projectId})
             if(res.data.success){
-                toast.success(res.data.message);
+                toast.success(res.data.message || "Task created successfully.");
                 settitle('')
                 setdescription('')
                 setloading(false)
                 onClose()
+            } else {
+                toast.error(res.data.message || "Failed to create task. Please try again.");
             }
         }catch (err) {
-            console.error('register error:', err);
+            console.error('create task error:', err);
             console.log(err?.response?.data)
-            toast.error(err?.response?.data?.message)
+            toast.error(err?.response?.data?.message || "Something went wrong while creating the task. Please try again.");
         }finally {
             setloading(false);
         }

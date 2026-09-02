@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { FaUserPlus } from "react-icons/fa";
 import useUserStore from "@/store/user/useUserstore";
+import { toast } from "react-toastify";
 
 export function SidebarBlock() {
     const { data: session } = useSession();
@@ -158,15 +159,19 @@ export function SidebarBlock() {
                                                 "true",
                                             );
 
-                                            await signOut({ redirect: false });
-
-                                            clearUserStore();
-
-                                            sessionStorage.removeItem(
-                                                "isLoggingOut",
-                                            );
-
-                                            router.push("/signin");
+                                            try {
+                                                await signOut({ redirect: false });
+                                                clearUserStore();
+                                                toast.success("Logged out successfully.");
+                                                router.push("/signin");
+                                            } catch (error) {
+                                                console.log(error);
+                                                toast.error("Failed to log out. Please try again.");
+                                            } finally {
+                                                sessionStorage.removeItem(
+                                                    "isLoggingOut",
+                                                );
+                                            }
                                         } else {
                                             router.push(link.href);
                                         }

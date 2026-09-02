@@ -66,7 +66,7 @@ const page = () => {
                 name, email, role, password, years_of_experience: Number(yop), joining_date: joiningdate, phoneno
             })
             if (res.data.success) {
-                toast.success(res.data.message)
+                toast.success(res.data.message || "User created successfully.")
                 setname('')
                 setrole('')
                 setemail('')
@@ -77,12 +77,12 @@ const page = () => {
                 getusers();
             }
             else {
-                toast.error(res.data.message)
+                toast.error(res.data.message || "Failed to create user. Please try again.")
             }
         } catch (err) {
-            console.error('register error:', err);
+            console.error('create user error:', err);
             console.log(err?.response?.data)
-            toast.error(err?.response?.data?.message)
+            toast.error(err?.response?.data?.message || "Something went wrong while creating the user. Please try again.")
         } finally {
             setloading(false);
         }
