@@ -5,6 +5,7 @@ import api from "@/lib/axios";
 import usePageStore from "@/store/pages/usePageStore";
 import useUserStore from "@/store/user/useUserstore";
 import { HiOutlineHome } from "react-icons/hi";
+import EmptyState from "@/components/ui/EmptyState";
 const page = () => {
     const [organisations, setorganisations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -48,42 +49,41 @@ const page = () => {
     }, [user]);
     if (loading)
         return (
-            <div className="w-full h-[90%] bg-[#f9fafb] flex justify-evenly items-start overflow-y-auto flex-wrap">
-                {Array.from({ length: 10 }).map((_, index) => (
-                    <div
-                        key={index}
-                        className="w-[45%] h-[15%] animate-pulse [animation-duration:1s] rounded-2xl bg-[#ffffff] transition-all duration-300 hover:scale-103 hover:shadow-lg shadow-xl mt-4 flex flex-col justify-center items-center border-b-4 border-r-4 border-[#2c84db]"
-                    >
-                        <div className="w-[90%] h-[40%] flex justify-around items-center ">
-                            <div className="w-13 h-13 bg-gray-300 rounded-2xl animate-pulse [animation-duration:1s]" />
-                            <div className="w-[80%] h-full flex justify-start items-center">
-                                <div className="w-[70%] h-6 flex justify-start items-center text-xl font-semibold bg-gray-300 rounded animate-pulse [animation-duration:1s]" />
+            <div className="w-full h-[90%] bg-[#f9fafb] overflow-y-auto p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    {Array.from({ length: 6 }).map((_, index) => (
+                        <div
+                            key={index}
+                            className="rounded-2xl bg-white border border-gray-100 shadow-sm p-5 flex items-center gap-4"
+                        >
+                            <div className="w-14 h-14 shrink-0 bg-gray-200 rounded-2xl animate-pulse [animation-duration:1s]" />
+                            <div className="flex-1 flex flex-col gap-2">
+                                <div className="h-5 w-3/5 bg-gray-200 rounded animate-pulse [animation-duration:1s]" />
+                                <div className="h-3 w-2/5 bg-gray-100 rounded animate-pulse [animation-duration:1s]" />
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         );
     return (
-        <div className="w-full h-[90%] bg-[#f9fafb] flex justify-evenly items-start overflow-y-auto flex-wrap">
+        <div className="w-full h-[90%] bg-[#f9fafb] overflow-y-auto p-6">
             {organisations.length === 0 ? (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-4">
-                    <div className="p-6 border-2 rounded-lg bg-gray-200 shadow-lg">
-                        <HiOutlineHome size={40}/>
-                    </div>
-                    <div className="text-2xl font-bold flex items-center justify-center">
-                        No organisation yet
-                    </div>
-                    <div className="w-[45%] text-center flex items-center justify-center text-gray-500">
-                        You're not part of any organisation. Create one to start managing projects and teams.
-                    </div>
+                <div className="w-full h-full flex justify-center items-center">
+                    <EmptyState
+                        icon={HiOutlineHome}
+                        title="No organisation yet"
+                        description="You're not part of any organisation. Create one to start managing projects and teams."
+                        size="lg"
+                    />
                 </div>
             ) : (
-                organisations.map((idx, key) => {
-                    return <OrgansiationCard key={key} idx={idx} />;
-                })
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    {organisations.map((idx, key) => {
+                        return <OrgansiationCard key={key} idx={idx} />;
+                    })}
+                </div>
             )}
-            {}
         </div>
     );
 };

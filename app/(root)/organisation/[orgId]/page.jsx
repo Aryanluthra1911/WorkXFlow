@@ -1,9 +1,12 @@
 'use client'
-import React, { useEffect, useState, use } from 'react'
+import React, { useEffect, useState } from 'react'
 import api from '@/lib/axios';
 import { useParams, useRouter } from 'next/navigation';
 import useUserStore from '@/store/user/useUserstore';
 import usePageStore from '@/store/pages/usePageStore';
+import { HiOutlineChevronRight } from 'react-icons/hi';
+import EmptyState from '@/components/ui/EmptyState';
+import { HiOutlineFolderOpen } from 'react-icons/hi2';
 
 
 const page = () => {
@@ -14,9 +17,15 @@ const page = () => {
     const [loading, setLoading] = useState(true);
     const [totalProjects,settotalProjects] = useState([])
     const [statusSummary,setstatusSummary] = useState([])
-    const projectStatus = [{title:"TOTAL PROJECTS",count:totalProjects,color:'#4f8ef7'},{title:"ACTIVE",count:statusSummary.ACTIVE,color:'#0891b2'},{title:"PENDING",count:statusSummary.PENDING,color:'#facc15'},{title:"COMPLETED",count:statusSummary.COMPLETED,color:'#22c55e'},{title:"ON HOLD",count:statusSummary.ON_HOLD,color:'#ef4444'}]
+    const projectStatus = [
+        {title:"TOTAL PROJECTS",count:totalProjects,color:'#2563eb',bg:'#eff6ff'},
+        {title:"ACTIVE",count:statusSummary.ACTIVE,color:'#0891b2',bg:'#ecfeff'},
+        {title:"PENDING",count:statusSummary.PENDING,color:'#ca8a04',bg:'#fefce8'},
+        {title:"COMPLETED",count:statusSummary.COMPLETED,color:'#16a34a',bg:'#f0fdf4'},
+        {title:"ON HOLD",count:statusSummary.ON_HOLD,color:'#dc2626',bg:'#fef2f2'}
+    ]
     const filter = ["All","Active","Pending","Completed","On Hold"]
-    const colordata = [{title:"ACTIVE",textClr:"#000000",bg:"#8ec5ff"},{title:"PENDING",textClr:"#000000",bg:"#fff085"},{title:"COMPLETED",textClr:"#000000",bg:"#7bf1a8"},{title:"ON_HOLD",textClr:"#000000",bg:"#ff6467"}]
+    const colordata = [{title:"ACTIVE",textClr:"#075985",bg:"#bae6fd"},{title:"PENDING",textClr:"#854d0e",bg:"#fef08a"},{title:"COMPLETED",textClr:"#166534",bg:"#bbf7d0"},{title:"ON_HOLD",textClr:"#991b1b",bg:"#fecaca"}]
     const [active,setactive] = useState("All")
     const [projects,setprojects] = useState([])
     const setTitle = usePageStore((state) => state.setTitle);
@@ -60,91 +69,93 @@ const page = () => {
     },[user,orgId])
     const filteredProjects = active ==="All"?projects:projects.filter(project => project.status === active.toUpperCase().replace(" ", "_"))
     if (loading) 
-        return <div className='w-full h-[90%] bg-[#e9ecef] flex flex-col justify-between items-center'>
-            <div className='w-full h-[20%] flex justify-evenly items-center'>
+        return <div className='w-full h-[90%] bg-[#f9fafb] overflow-y-auto p-6'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4'>
                 {Array.from({ length: 5}).map((_,index) => (
-                    <div key={index} className=' border-r-4 border-b-4 w-[18%] h-[85%] border-gray-400 bg-gray-300 animate-pulse [animation-duration:900ms] shadow-xl rounded-2xl '>
+                    <div key={index} className='h-24 rounded-2xl bg-white border border-gray-100 shadow-sm animate-pulse [animation-duration:900ms] flex flex-col justify-center items-center gap-2'>
+                        <div className='h-3 w-16 bg-gray-200 rounded' />
+                        <div className='h-6 w-10 bg-gray-200 rounded' />
                     </div>
                 ))}
             </div>
-            <div className='w-full h-[5%] flex justify-evenly items-center'>
-                <div className=' w-[54%] h-[90%] bg-gray-300 animate-pulse [animation-duration:900ms] rounded-xl border-r-4 border-b-4 border-gray-400'/>
-                <div className=' w-[40%] h-[90%] flex gap-5 justify-center items-center'>
+            <div className='flex flex-wrap gap-3 justify-between items-center mt-6 mb-4'>
+                <div className='h-6 w-40 bg-gray-200 rounded animate-pulse [animation-duration:900ms]'/>
+                <div className='flex gap-2'>
                     {filter.map((idx,key) => (
-                        <button key={key} className={`h-[90%] min-w-15 w-auto p-2 shadow-md rounded-2xl bg-gray-300 animate-pulse [animation-duration:900ms] border-r-4 border-b-4 border-gray-400 `}/>
+                        <div key={key} className='h-9 w-20 rounded-full bg-white border border-gray-100 shadow-sm animate-pulse [animation-duration:900ms]'/>
                     ))}
                 </div>
             </div>
-        <div className='w-full h-[70%] flex justify-center'>
-            <div className='w-[96%] h-[100%] overflow-y-auto no-scrollbar space-y-2 '>
-                {Array.from({length:10}).map((_,index)=>(
-                    <div key={index} className='w-[100%] h-[60px] border-r-4 border-b-4 border-gray-400 bg-gray-300 animate-pulse [animation-duration:900ms] rounded-2xl shadow-lg flex'/>
+            <div className='space-y-3'>
+                {Array.from({length:6}).map((_,index)=>(
+                    <div key={index} className='w-full h-16 bg-white border border-gray-100 rounded-2xl shadow-sm animate-pulse [animation-duration:900ms]'/>
                 ))}
             </div>
         </div>
-    </div>
     return (
-        <div className='w-full h-[90%] bg-[#e9ecef] flex flex-col justify-between items-center'>
-            <div className='w-full h-[20%] flex justify-evenly items-center'>
+        <div className='w-full h-[90%] bg-[#f9fafb] overflow-y-auto p-6'>
+            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4'>
                 {projectStatus.map((idx,key)=>{
-                    return <div idx={idx} key={key} className='border-r-4 border-b-4 border-gray-400 hover:scale-105 transition-all duration-500  w-[18%] h-[85%] bg-white shadow-xl rounded-2xl flex flex-col items-center justify-evenly'>
-                        <div className='w-[80%] h-[20%]  font-semibold text-xl text-gray-500 flex items-center justify-center'>
+                    return <div key={key} className='rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 p-4 flex flex-col gap-2'>
+                        <div className='text-xs font-semibold text-gray-400 uppercase tracking-wide'>
                             {idx.title}
                         </div>
-                        <div style={{ color: idx.color }} className={` w-[70%] h-[60%] flex items-center justify-center font-bold text-3xl`}>
-                            {idx.count}
+                        <div style={{ color: idx.color }} className='font-bold text-3xl'>
+                            {idx.count || 0}
                         </div>
                     </div>
                 })}
             </div>
-            <div className='w-full h-[5%] flex font-semibold justify-evenly items-center'>
-                <div className=' w-[54%] h-[90%] text-xl text-gray-500 transition-all duration-500'>
+            <div className='flex flex-wrap gap-3 justify-between items-center mt-8 mb-4'>
+                <div className='text-lg font-semibold text-gray-700'>
                     {active} Projects
                 </div>
-                <div className=' w-[40%] h-[90%] flex gap-5 justify-center items-center'>
+                <div className='flex gap-2 flex-wrap'>
                     {filter.map((idx,key) => (
-                        <button onClick={()=>setactive(idx)} key={key} className={`${active === idx?"bg-[#1e293b] text-white scale-105":"bg-white text-gray-500"} hover:scale-104 hover:shadow-2xl transition-all duration-500 h-[90%] min-w-10 w-auto p-2 border shadow-md  rounded-2xl flex items-center justify-center text-sm`}>{idx}</button>
+                        <button onClick={()=>setactive(idx)} key={key} className={`${active === idx?"bg-[#1e293b] text-white":"bg-white text-gray-500 border border-gray-200 hover:border-gray-300"} transition-all duration-200 h-9 px-4 rounded-full flex items-center justify-center text-sm font-medium`}>{idx}</button>
                     ))}
                 </div>
             </div>
-            <div className='w-full h-[70%] flex justify-center items-center'>
-                <div className='w-[96%] h-full overflow-y-auto no-scrollbar space-y-2 flex flex-col items-center '>
-                    
-                    {filteredProjects.map((project)=>{
-                        const clr = colordata.find(data => data.title === project.status)
-                        const totalTasks = project.task.length;
-                        const completedTasks = project.task.filter(
-                            task => task.status === "COMPLETED"
-                        ).length;
-                        const progress = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
-                        return <div onClick={()=>{
-                            router.push(`/organisation/${orgId}/${project.id}`)
-                        }} key={project.id} className='hover:scale-98 w-[100%] h-15 border-r-4 border-b-4 border-gray-400 bg-white rounded-2xl shadow-lg flex transition-all duration-800'>
-                            <div className='w-[60%] h-full flex items-center pl-4 gap-5'>
-                                <div style={{backgroundColor: clr?.bg,color: clr?.textClr || "white"}} className='w-11 h-[75%] border rounded-2xl  flex justify-center items-center font-semibold'>
-                                    {project.title?.split(" ").slice(0, 2).map(word => word[0]).join("").toUpperCase()}
-                                </div>
-                                <div className='h-[80%] w-auto text-lg font-semibold flex justify-center items-center'>
-                                    {project.title}
-                                </div>
+            <div className='space-y-3 pb-6'>
+                {filteredProjects.length === 0 ? (
+                    <div className='w-full flex justify-center py-16'>
+                        <EmptyState
+                            icon={HiOutlineFolderOpen}
+                            title="No projects found"
+                            description="There are no projects matching this filter yet."
+                            size="md"
+                        />
+                    </div>
+                ) : filteredProjects.map((project)=>{
+                    const clr = colordata.find(data => data.title === project.status)
+                    const totalTasks = project.task.length;
+                    const completedTasks = project.task.filter(
+                        task => task.status === "COMPLETED"
+                    ).length;
+                    const progress = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+                    return <div onClick={()=>{
+                        router.push(`/organisation/${orgId}/${project.id}`)
+                    }} key={project.id} className='group cursor-pointer w-full bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 flex items-center gap-4 p-4'>
+                        <div style={{backgroundColor: clr?.bg, color: clr?.textClr}} className='w-11 h-11 shrink-0 rounded-2xl flex justify-center items-center font-semibold'>
+                            {project.title?.split(" ").slice(0, 2).map(word => word[0]).join("").toUpperCase()}
+                        </div>
+                        <div className='flex-1 min-w-0 text-base font-semibold text-gray-800 truncate'>
+                            {project.title}
+                        </div>
+                        <div style={{backgroundColor: clr?.bg, color: clr?.textClr}} className='shrink-0 px-3 py-1 rounded-full text-xs font-semibold'>
+                            {project.status}
+                        </div>
+                        <div className='hidden sm:flex items-center gap-3 w-40 shrink-0'>
+                            <div className='flex-1 h-2 bg-gray-100 rounded-full overflow-hidden'>
+                                <div style={{ width: `${progress}%` }} className='h-full bg-green-500 rounded-full transition-all duration-300'/>
                             </div>
-                            <div className='w-[10%] h-full flex justify-center items-center'>
-                                <div style={{backgroundColor: clr?.bg,color: clr?.textClr || "white"}} className='h-[45%] w-auto pr-2 pl-2 flex justify-center items-center rounded-2xl  text-sm font-semibold '>
-                                    {project.status}
-                                </div>
-                            </div>
-                            
-                            <div className='w-[30%] h-full flex justify-center items-center'>
-                                <div className='w-[80%] h-[30%] bg-[#e9ecef] rounded-2xl'>
-                                    <div style={{ width: `${progress}%` }} className='w-[15%] h-full bg-green-500 rounded-2xl'/>
-                                </div>
-                                <div className='w-[10%] h-[40%] text-xs flex justify-center items-center'>
-                                    {progress}%
-                                </div>
+                            <div className='w-9 text-xs font-medium text-gray-500 text-right'>
+                                {progress}%
                             </div>
                         </div>
-                    })}
-                </div>
+                        <HiOutlineChevronRight className='h-5 w-5 shrink-0 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all duration-200' />
+                    </div>
+                })}
             </div>
         </div>
     )

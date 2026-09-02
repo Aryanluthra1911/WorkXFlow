@@ -7,6 +7,7 @@ import api from "@/lib/axios";
 import { ChartBarMultiple } from "./ChartBarMultiple";
 import usePageStore from "@/store/pages/usePageStore";
 import { LuClipboardList } from "react-icons/lu";
+import EmptyState from "@/components/ui/EmptyState";
 
 
 const Member_dashboard = () => {
@@ -137,12 +138,11 @@ const Member_dashboard = () => {
                                         ),
                                     )
                                 ) : content.length === 0 ? (
-                                    <div className="w-full h-full flex flex-col items-center justify-center text-md font-semibold text-gray-500 gap-3">
-                                        <div className=" p-4 bg-gray-200 rounded-xl shadow-lg">
-                                            <LuClipboardList size={20} />
-                                        </div>
-                                        No {idx.title} Data
-                                    </div>
+                                    <EmptyState
+                                        icon={LuClipboardList}
+                                        title={`No ${idx.title} Data`}
+                                        size="sm"
+                                    />
                                 ) : (
                                     (idx.content || []).map((idx2, key) => (
                                         <SmallProjectCard

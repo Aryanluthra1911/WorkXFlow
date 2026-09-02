@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { LuClipboardCheck } from "react-icons/lu";
 import TaskCard from "./TaskCard";
 import SmallProjectCard from "./SmallProjectCard";
+import EmptyState from "./ui/EmptyState";
 const TaskDetailBlock = () => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -59,9 +60,11 @@ const TaskDetailBlock = () => {
             </div>
             <div className="h-[75%] w-[95%] overflow-y-auto no-scrollbar space-y-2">
                 {tasks?.length === 0 ? (
-                    <div className="text-md text-gray-400 w-full h-full flex items-center justify-center">
-                        No Task Found
-                    </div>
+                    <EmptyState
+                        icon={LuClipboardCheck}
+                        title="No Task Found"
+                        size="sm"
+                    />
                 ) : (
                     tasks.map((idx, key) => {
                         console.log(idx);

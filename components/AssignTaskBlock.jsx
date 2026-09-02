@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import api from '@/lib/axios';
 import useAdminStore from '@/store/admin/useAdminstore';
 import useUserStore from '@/store/user/useUserstore';
+import EmptyState from '@/components/ui/EmptyState';
 
 const AssignTaskBlock = () => {
     const [open,setopen] = useState(false);
@@ -45,23 +46,23 @@ const AssignTaskBlock = () => {
         getLatestTasks()
     },[open])
     return (
-        <div className='h-[95%] w-[48%] bg-white rounded-2xl shadow-lg border-2 flex flex-col items-center justify-around border-t-[#2563eb] border-t-3'>
+        <div className='h-[95%] w-[48%] bg-white rounded-2xl shadow-lg shadow-gray-200/60 border border-gray-100 flex flex-col items-center justify-around border-t-[#2563eb] border-t-4'>
             <div className='h-[15%] w-[90%] flex gap-4 items-center'>
-                <div className='w-[10%] h-[90%] rounded-xl bg-[#dbeafe] flex justify-center items-center'>
-                    <CheckSquare className="h-7 w-7 shrink-0 text-[#2563eb] dark:text-neutral-200"/>
+                <div className='w-12 h-12 shrink-0 rounded-xl bg-[#dbeafe] flex justify-center items-center'>
+                    <CheckSquare className="h-6 w-6 shrink-0 text-[#2563eb] dark:text-neutral-200"/>
                 </div>
-                <div className='text-2xl font-semibold text-[#2563eb]'>Assign Task</div>
+                <div className='text-2xl font-semibold text-[#2563eb] tracking-tight'>Assign Task</div>
             </div>
-            <div className='h-[8%] w-[90%]  text-[#747c86]'>
+            <div className='h-[8%] w-[90%]  text-[#747c86] text-sm'>
                 Create and assign new tasks to team members
             </div>
             <div className=' h-[15%] w-[90%]'>
-                <button onClick={()=>(setopen(true))} className='w-full h-[90%] text-white bg-[#2563eb] rounded-2xl text-lg font-semibold'>
+                <button onClick={()=>(setopen(true))} className='w-full h-[90%] text-white bg-[#2563eb] hover:bg-[#1d4fd1] active:scale-[0.99] shadow-md shadow-blue-200 rounded-2xl text-lg font-semibold transition-all duration-200'>
                     + Assign New Task
                 </button>
             </div>
-            <div className='h-[8%] w-[90%] text-black font-semibold text-sm flex items-center'>
-                Recent Tasks:
+            <div className='h-[8%] w-[90%] text-gray-400 font-semibold text-xs uppercase tracking-wide flex items-center'>
+                Recent Tasks
             </div>
             <div className='w-[90%] h-[40%] flex flex-col items-center justify-start gap-2'>
                 {loading ? 
@@ -73,14 +74,16 @@ const AssignTaskBlock = () => {
                 ))
                 :
                 latestTasks?.length===0 ?(
-                    <div className='font-semibold text-md text-gray-400 h-full w-full flex justify-center items-center'>
-                        No Tasks Found
-                    </div>
+                    <EmptyState
+                        icon={CheckSquare}
+                        title="No Tasks Found"
+                        size="sm"
+                    />
                 ):(
                     latestTasks.map((idx,key)=>(
-                        <div key={idx.id} className=' bg-[#f9fafb] rounded-2xl h-[45%] w-full flex flex-col justify-center items-start'>
-                            <div className='pl-5 text-sm font-bold'>{idx.title}</div>
-                            <div className='pl-5 text-sm font-semibold text-[#747c86]'>Assigned To: {idx.assignedTo}</div>
+                        <div key={idx.id} className='bg-[#f9fafb] border border-gray-100 hover:bg-white hover:border-gray-200 hover:shadow-sm rounded-2xl h-[45%] w-full flex flex-col justify-center items-start transition-all duration-200'>
+                            <div className='pl-5 text-sm font-bold text-gray-800'>{idx.title}</div>
+                            <div className='pl-5 text-sm font-medium text-[#747c86]'>Assigned To: <span className='text-gray-700'>{idx.assignedTo}</span></div>
                         </div>
                     ))
                 )}
@@ -153,9 +156,9 @@ function TaskModel({onClose}){
             <div className='absolute inset-0 bg-black/40 backdrop-blur-sm'/>
             <div className='relative z-10 w-[50%] h-[65%]  mx-4 bg-white rounded-2xl shadow-2xl border border-gray-200 p-4 transform transition-all duration-200 flex flex-col items-center justify-around'>
                 <div className='w-[95%] h-[10%] flex items-center justify-between'>
-                    <div className='text-2xl font-bold h-full w-70 flex items-center '>Create New Task</div>
-                    <div onClick={onClose} className='h-[90%] w-10 flex justify-center items-center rounded-xl'>
-                        <RxCross2 className="h-6 w-6 shrink-0 text-gray-400 hover:text-black dark:text-neutral-200 transform transition-all duration-200"/>
+                    <div className='text-2xl font-bold h-full w-70 flex items-center text-gray-800'>Create New Task</div>
+                    <div onClick={onClose} className='h-9 w-9 flex justify-center items-center rounded-xl hover:bg-gray-100 transition-all duration-200 cursor-pointer'>
+                        <RxCross2 className="h-5 w-5 shrink-0 text-gray-400 hover:text-black dark:text-neutral-200 transform transition-all duration-200"/>
                     </div>
                 </div>
                 <form onSubmit={sendData} className='w-[95%] h-[80%] flex flex-col items-center '>
@@ -241,10 +244,10 @@ function TaskModel({onClose}){
                         </div>
                     </div>
                     <div className='w-full h-[12%] flex justify-around items-center'>
-                        <button onClick={onClose} className='w-[40%] h-full rounded-2xl text-xl font-semibold border-black border hover:border-white hover:bg-red-600 hover:text-[#ffffff] transform transition-all duration-200'>
+                        <button type="button" onClick={onClose} className='w-[40%] h-full rounded-2xl text-lg font-semibold border border-gray-300 text-gray-700 hover:border-red-500 hover:bg-red-50 hover:text-red-600 transform transition-all duration-200'>
                             Cancel
                         </button>
-                        <button type='submit' className={`${loading? "bg-[#268a4a]":""}transform transition-all duration-200 hover:border-black w-[40%] h-full bg-[#2563eb] text-white rounded-2xl text-xl font-semibold border`}>
+                        <button type='submit' disabled={loading} className={`${loading? "bg-[#268a4a]":"bg-[#2563eb] hover:bg-[#1d4fd1]"} transform transition-all duration-200 shadow-md shadow-blue-100 w-[40%] h-full text-white rounded-2xl text-lg font-semibold border-none disabled:opacity-80`}>
                             {loading? "Creating Task...":"Create Task"}
                         </button>
                     </div>

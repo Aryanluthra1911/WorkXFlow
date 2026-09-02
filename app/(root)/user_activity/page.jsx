@@ -4,6 +4,8 @@ import usePageStore from "@/store/pages/usePageStore";
 import { getSocket } from "@/lib/socket";
 import api from "@/lib/axios";
 import React, { useEffect, useState } from "react";
+import EmptyState from "@/components/ui/EmptyState";
+import { LuUsers } from "react-icons/lu";
 
 const COLORS = ["#3b82f6", "#22c55e", "#a855f7", "#ef4444", "#f59e0b", "#06b6d4", "#ec4899"];
 const DAY_LABELS_SHORT = ["M", "T", "W", "T", "F", "S", "S"];
@@ -158,9 +160,11 @@ const page = () => {
                     {loading ? (
                         [...Array(10)].map((_, i) => <SkeletonRow key={i} />)
                     ) : filteredUsers.length === 0 ? (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 font-semibold">
-                            No users found
-                        </div>
+                        <EmptyState
+                            icon={LuUsers}
+                            title="No users found"
+                            size="sm"
+                        />
                     ) : (
                         filteredUsers.map((user, key) => {
                             const status = getStatus(user.id);

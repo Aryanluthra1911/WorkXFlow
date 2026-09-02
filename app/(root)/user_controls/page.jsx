@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import useUserStore from '@/store/user/useUserstore';
 import usePageStore from '@/store/pages/usePageStore';
+import EmptyState from '@/components/ui/EmptyState';
 
 
 const page = () => {
@@ -240,9 +241,11 @@ const page = () => {
                     ))
                     :
                     users?.length===0 && showNoData?
-                        <div className=' font-semibold w-full h-full flex justify-center items-center text-xl text-gray-400'>
-                            No User Data
-                        </div>
+                        <EmptyState
+                            icon={LuUsers}
+                            title="No User Data"
+                            size="sm"
+                        />
                         
                     :
                     users.map((idx,key)=>{

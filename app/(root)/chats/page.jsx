@@ -8,6 +8,7 @@ import { getSocket } from "@/lib/socket";
 import api from "@/lib/axios";
 import useUserStore from "@/store/user/useUserstore";
 import { useRef } from "react";
+import EmptyState from "@/components/ui/EmptyState";
 
 const page = () => {
     const [id, setid] = useState(null);
@@ -128,9 +129,11 @@ const page = () => {
                                 />
                             ))
                         ) : !users || users.length === 0 ? (
-                            <p className="w-full h-full items-center justify-center font-semibold">
-                                No Users Found
-                            </p>
+                            <EmptyState
+                                icon={IoChatbubblesOutline}
+                                title="No Users Found"
+                                size="sm"
+                            />
                         ) : (
                             users.map((idx, key) => {
                                 return (
@@ -196,17 +199,12 @@ const page = () => {
                                 </div>
                             ))
                         ) : messages.length === 0 ? (
-                            <div className="w-full h-full flex items-center justify-center">
-                                <div className="flex flex-col items-center gap-3">
-                                    <div className="w-30 h-30 border bg-white rounded-2xl flex items-center justify-center shadow-xl">
-                                        <IoChatbubblesOutline className="w-20 h-20 text-gray-500" />
-                                    </div>
-                                    <div className="text-2xl font-bold">No messages yet</div>
-                                    <div className="text-sm font-semibold text-gray-400">
-                                        Start a conversation to get things moving....
-                                    </div>
-                                </div>
-                            </div>
+                            <EmptyState
+                                icon={IoChatbubblesOutline}
+                                title="No messages yet"
+                                description="Start a conversation to get things moving...."
+                                size="md"
+                            />
                         ) : (
                             <>
                                 {messages.map((msg) => (

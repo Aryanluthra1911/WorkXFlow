@@ -17,6 +17,18 @@ import { DragOverlay } from "@dnd-kit/core";
 import useUserStore from "@/store/user/useUserstore";
 import usePageStore from "@/store/pages/usePageStore";
 
+const AVATAR_COLORS = [
+    "bg-emerald-700",
+    "bg-indigo-700",
+    "bg-orange-700",
+    "bg-sky-700",
+    "bg-rose-700",
+    "bg-violet-700",
+];
+
+const avatarColor = (name) =>
+    AVATAR_COLORS[(name?.length || 0) % AVATAR_COLORS.length];
+
 const page = () => {
     const params = useParams();
     const { project_Id } = params;
@@ -36,7 +48,8 @@ const page = () => {
     const columnData = [
         {
             title: "PENDING",
-            borderClr: "#fcd34d",
+            label: "Pending",
+            accent: "#f59e0b",
             bg: "#fffbeb",
             bg2: "#fef3c7",
             txtClr: "#b5540b",
@@ -44,7 +57,8 @@ const page = () => {
         },
         {
             title: "ACTIVE",
-            borderClr: "#93c5fd",
+            label: "Active",
+            accent: "#3b82f6",
             bg: "#eff6ff",
             bg2: "#dbeafe",
             txtClr: "#1d4ed8",
@@ -52,7 +66,8 @@ const page = () => {
         },
         {
             title: "COMPLETED",
-            borderClr: "#6ee7b7",
+            label: "Completed",
+            accent: "#10b981",
             bg: "#f0fdf6",
             bg2: "#d1fae5",
             txtClr: "#065f46",
@@ -60,7 +75,8 @@ const page = () => {
         },
         {
             title: "ON_HOLD",
-            borderClr: "#c4b5fd",
+            label: "On Hold",
+            accent: "#8b5cf6",
             bg: "#faf5ff",
             bg2: "#ede9fe",
             txtClr: "#5b21b6",
@@ -68,7 +84,8 @@ const page = () => {
         },
         {
             title: "CANCELLED",
-            borderClr: "#fca5a5",
+            label: "Cancelled",
+            accent: "#ef4444",
             bg: "#fff1f1",
             bg2: "#fee2e2",
             txtClr: "#991b1b",
@@ -110,7 +127,7 @@ const page = () => {
         return (
             <div
                 ref={setNodeRef}
-                className="w-[93%] h-[92%] overflow-y-auto no-scrollbar space-y-3 pt-2"
+                className="flex-1 w-full overflow-y-auto no-scrollbar space-y-3 p-3"
             >
                 {children}
             </div>
@@ -153,58 +170,31 @@ const page = () => {
     }, [user]);
     if (loading) {
         return (
-            <div className="w-full h-[90%] bg-[#f3f4f6] flex justify-evenly items-center">
-                {columnData.map((idx, key) => {
-                    const Icon = idx.icon;
-                    const filteredTasks = tasks.filter(
-                        (task) => task.status === idx.title,
-                    );
-                    return (
+            <div className="w-full h-[90%] bg-[#f9fafb] overflow-x-auto p-4">
+                <div className="grid grid-cols-5 gap-4 h-full min-w-[1100px]">
+                    {columnData.map((idx, key) => (
                         <div
-                            idx={idx}
                             key={key}
-                            className="w-[18%] h-[95%] bg-[#f3f4f6] border-2 border-[#e5e7eb] rounded-2xl flex flex-col items-center justify-evenly"
+                            className="bg-white border border-gray-100 shadow-sm rounded-2xl flex flex-col overflow-hidden"
                         >
                             <div
-                                style={{
-                                    backgroundColor: idx.bg,
-                                    color: idx.txtClr,
-                                    borderColor: idx.borderClr,
-                                    borderBottomColor: idx.txtClr,
-                                }}
-                                className={`w-full h-[7%] rounded-t-xl border-2 border-b-4 shadow-lg flex justify-evenly items-center`}
+                                style={{ borderBottomColor: idx.accent }}
+                                className="w-full px-4 py-3 border-b-2 bg-gray-50 flex items-center justify-between shrink-0"
                             >
-                                <div className="w-[80%] h-full flex items-center justify-center  font-bold gap-2">
-                                    <Icon
-                                        size={13}
-                                        style={{ color: idx.txtClr }}
-                                    />
-                                    {idx.title}
-                                </div>
-                                <div
-                                    style={{
-                                        backgroundColor: idx.bg2,
-                                        color: idx.txtClr,
-                                        borderColor: idx.borderClr,
-                                    }}
-                                    className="w-[10%] h-[60%] flex items-center justify-center text-xs border rounded-full shadow-lg font-bold"
-                                >
-                                    
-                                    {filteredTasks.length}
-                                </div>
+                                <div className="h-4 w-20 bg-gray-200 rounded animate-pulse [animation-duration:900ms]" />
+                                <div className="h-5 w-5 rounded-full bg-gray-200 animate-pulse [animation-duration:900ms]" />
                             </div>
-                            <div className="w-[93%] h-[92%] overflow-y-auto no-scrollbar space-y-3 pt-2">
-                                {Array.from({ length: 6 }).map((_, index) => (
+                            <div className="flex-1 overflow-y-auto no-scrollbar space-y-3 p-3">
+                                {Array.from({ length: 4 }).map((_, index) => (
                                     <div
                                         key={index}
-                                        className="w-full h-25 bg-gray-300 animate-pulse [animation-duration:900ms] rounded-xl border-r-2
-                            border-b-2 border-gray-400"
+                                        className="w-full h-24 bg-gray-100 animate-pulse [animation-duration:900ms] rounded-xl border border-gray-200"
                                     />
                                 ))}
                             </div>
                         </div>
-                    );
-                })}
+                    ))}
+                </div>
             </div>
         );
     }
@@ -221,67 +211,67 @@ const page = () => {
                 setActiveTask(null);
             }}
         >
-            <div className="w-full h-[90%] bg-[#f3f4f6] flex justify-evenly items-center">
-                {columnData.map((idx, key) => {
-                    const Icon = idx.icon;
-                    const filteredTasks = tasks.filter(
-                        (task) => task.status === idx.title,
-                    );
-                    return (
-                        <div
-                            idx={idx}
-                            key={key}
-                            className="w-[18%] h-[95%] bg-[#f3f4f6] border-2 border-[#e5e7eb] rounded-2xl flex flex-col items-center justify-evenly"
-                        >
+            <div className="w-full h-[90%] bg-[#f9fafb] overflow-x-auto p-4">
+                <div className="grid grid-cols-5 gap-4 h-full min-w-[1100px]">
+                    {columnData.map((idx, key) => {
+                        const Icon = idx.icon;
+                        const filteredTasks = tasks.filter(
+                            (task) => task.status === idx.title,
+                        );
+                        return (
                             <div
-                                style={{
-                                    backgroundColor: idx.bg,
-                                    color: idx.txtClr,
-                                    borderColor: idx.borderClr,
-                                    borderBottomColor: idx.txtClr,
-                                }}
-                                className={`w-full h-[7%] rounded-t-xl border-2 border-b-4 shadow-lg flex justify-evenly items-center`}
+                                key={key}
+                                className="bg-white border border-gray-100 shadow-sm rounded-2xl flex flex-col overflow-hidden"
                             >
-                                <div className="w-[80%] h-full flex items-center justify-center  font-bold gap-2">
-                                    <Icon
-                                        size={13}
-                                        style={{ color: idx.txtClr }}
-                                    />
-                                    {idx.title}
-                                </div>
                                 <div
                                     style={{
-                                        backgroundColor: idx.bg2,
+                                        borderBottomColor: idx.accent,
                                         color: idx.txtClr,
-                                        borderColor: idx.borderClr,
                                     }}
-                                    className="w-[10%] h-[60%] flex items-center justify-center text-xs border rounded-full shadow-lg font-bold"
+                                    className="w-full px-4 py-3 border-b-2 bg-gray-50 flex items-center justify-between shrink-0"
                                 >
-                                    {filteredTasks.length}
+                                    <div className="flex items-center gap-2 font-semibold text-sm">
+                                        <Icon size={13} style={{ color: idx.accent }} />
+                                        {idx.label}
+                                    </div>
+                                    <div
+                                        style={{
+                                            backgroundColor: idx.bg2,
+                                            color: idx.txtClr,
+                                        }}
+                                        className="min-w-6 h-6 px-1.5 flex items-center justify-center text-xs rounded-full font-bold"
+                                    >
+                                        {filteredTasks.length}
+                                    </div>
                                 </div>
+                                <SortableContext
+                                    items={filteredTasks.map((task) => task.id)}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    <Column column={idx}>
+                                        {filteredTasks.length === 0 ? (
+                                            <div className="text-xs text-gray-300 text-center pt-6 italic">
+                                                No tasks
+                                            </div>
+                                        ) : (
+                                            filteredTasks.map((task) => (
+                                                <TaskCard
+                                                    idx2={task}
+                                                    idx={idx}
+                                                    key={task.id}
+                                                    onClick={() => (
+                                                        setopen(true),
+                                                        setSelectedTask(task)
+                                                    )}
+                                                />
+                                            ))
+                                        )}
+                                    </Column>
+                                </SortableContext>
                             </div>
-                            <SortableContext
-                                items={filteredTasks.map((task) => task.id)}
-                                strategy={verticalListSortingStrategy}
-                            >
-                                <Column column={idx}>
-                                    {filteredTasks.map((task) => (
-                                        <TaskCard
-                                            idx2={task}
-                                            idx={idx}
-                                            key={task.id}
-                                            onClick={() => (
-                                                setopen(true),
-                                                setSelectedTask(task)
-                                            )}
-                                        />
-                                    ))}
-                                </Column>
-                            </SortableContext>
-                        </div>
-                    );
-                })}
-                {console.log(open)}
+                        );
+                    })}
+                </div>
                 {open && (
                     <TaskDetails
                         task={selectedTask}
@@ -300,7 +290,7 @@ const page = () => {
                             {activeTask.description}
                         </div>
                         <div className="flex gap-2 text-xs items-center mt-2">
-                            <div className="w-7 h-7 bg-[#2563eb] rounded-2xl flex justify-center items-center text-white text-sm font-semibold">
+                            <div className={`w-7 h-7 ${avatarColor(activeTask.assignedTo)} rounded-2xl flex justify-center items-center text-white text-sm font-semibold`}>
                                 {activeTask.assignedTo
                                     ?.split(" ")
                                     .map((w) => w[0])
@@ -359,9 +349,9 @@ function TaskDetails({ onClose, project, task }) {
                     </div>
                     <div
                         onClick={onClose}
-                        className="h-[90%] w-10 flex justify-center items-center rounded-xl"
+                        className="h-9 w-9 flex justify-center items-center rounded-xl hover:bg-gray-100 transition-all duration-200 cursor-pointer"
                     >
-                        <RxCross2 className="h-6 w-6 shrink-0 text-gray-400 hover:text-black dark:text-neutral-200 transform transition-all duration-200" />
+                        <RxCross2 className="h-5 w-5 shrink-0 text-gray-400 hover:text-black dark:text-neutral-200 transform transition-all duration-200" />
                     </div>
                 </div>
                 <div className="w-[95%] h-[60%] flex items-center justify-evenly flex-2 flex-wrap">
